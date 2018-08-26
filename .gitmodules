@@ -1,0 +1,3 @@
+[submodule "submodules/CommandLineCore"]
+	path = submodules/CommandLineCore
+	url = git@github.com:sleifer/CommandLineCore.git

@@ -1,0 +1,7 @@
+CommandLineCore, ~> 1
+
+// Submodule name (comma) (space) <test> (space) version
+// Tests:
+//  == (equal),
+//  >= (greater than or equal),
+//  ~> (compatible, equal or sub-version)
