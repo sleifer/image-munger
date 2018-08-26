@@ -1,4 +1,4 @@
-CommandLineCore, ~> 1
+CommandLineCore, ~> 1.0
 
 // Submodule name (comma) (space) <test> (space) version
 // Tests:
