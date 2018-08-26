@@ -41,8 +41,6 @@ func main() {
     }
 }
 
-// swiftlint:disable cyclomatic_complexity
-
 func commandFrom(parser: ArgParser) -> Command? {
     var skipSubcommand = false
     var cmd: Command?
@@ -76,8 +74,6 @@ func commandFrom(parser: ArgParser) -> Command? {
 
     return cmd
 }
-
-// swiftlint:enable cyclomatic_complexity
 
 func baseSubPath(_ subpath: String) -> String {
     var path = subpath.standardizingPath

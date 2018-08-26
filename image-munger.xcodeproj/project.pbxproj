@@ -26,6 +26,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBE2DA1D2130CA160056C931 /* imp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = imp; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE2DA202130CA160056C931 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		DBE2DA282130CBB40056C931 /* libCommandLineCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libCommandLineCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -51,6 +52,7 @@
 			isa = PBXGroup;
 			children = (
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
+				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
 				DBE2DA2E213185850056C931 /* imgx.go */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
 				DBE2DA1E2130CA160056C931 /* Products */,
@@ -102,6 +104,7 @@
 				DBE2DA192130CA160056C931 /* Sources */,
 				DBE2DA1A2130CA160056C931 /* Frameworks */,
 				DBE2DA1B2130CA160056C931 /* CopyFiles */,
+				DBCB904E213316A500CB3B04 /* swiftlint */,
 			);
 			buildRules = (
 			);
@@ -143,6 +146,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DBCB904E213316A500CB3B04 /* swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = swiftlint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		DBE2DA192130CA160056C931 /* Sources */ = {
