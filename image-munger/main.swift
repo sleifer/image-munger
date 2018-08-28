@@ -27,6 +27,12 @@ func main() {
             commandName = CommandLine.arguments[0].lastPathComponent
             #endif
 
+            #if DEBUG
+            // for testing in Xcode
+            let path = "~/Documents/Code/image-munger".expandingTildeInPath
+            FileManager.default.changeCurrentDirectoryPath(path)
+            #endif
+
             baseDirectory = FileManager.default.currentDirectoryPath
 
             if let cmd = commandFrom(parser: parser), parser.args.count > 1 {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
+		DBCB90562134402000CB3B04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
 		DBE2DA212130CA160056C931 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA202130CA160056C931 /* main.swift */; };
 		DBE2DA292130CBB40056C931 /* libCommandLineCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE2DA282130CBB40056C931 /* libCommandLineCore.a */; };
 		DBE2DA2C2130CCD00056C931 /* CommandDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */; };
@@ -27,6 +29,9 @@
 
 /* Begin PBXFileReference section */
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
+		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
+		DBCB905421343F2900CB3B04 /* manifest.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = manifest.txt; path = testing/manifest.txt; sourceTree = "<group>"; };
+		DBCB90552134402000CB3B04 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		DBE2DA1D2130CA160056C931 /* imp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = imp; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE2DA202130CA160056C931 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		DBE2DA282130CBB40056C931 /* libCommandLineCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libCommandLineCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,6 +58,7 @@
 			children = (
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
+				DBCB905421343F2900CB3B04 /* manifest.txt */,
 				DBE2DA2E213185850056C931 /* imgx.go */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
 				DBE2DA1E2130CA160056C931 /* Products */,
@@ -73,6 +79,8 @@
 			children = (
 				DBE2DA202130CA160056C931 /* main.swift */,
 				DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */,
+				DBCB90522133662C00CB3B04 /* Manifest.swift */,
+				DBCB90552134402000CB3B04 /* Configuration.swift */,
 				DBE2DA2B2130CCD00056C931 /* CommandHandlers */,
 			);
 			path = "image-munger";
@@ -169,8 +177,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBCB90562134402000CB3B04 /* Configuration.swift in Sources */,
 				DBE2DA2C2130CCD00056C931 /* CommandDefinition.swift in Sources */,
 				DBE2DA212130CA160056C931 /* main.swift in Sources */,
+				DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */,
 				DBE2DA30213186EB0056C931 /* ProcessCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
