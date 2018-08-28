@@ -19,18 +19,12 @@ func main() {
 
         do {
             #if DEBUG
-            let args = ["imp", "./testing/manifest.txt"]
+            let args = ["imp"]
             commandName = args[0]
             let parsed = try parser.parse(args)
             #else
             let parsed = try parser.parse(CommandLine.arguments)
             commandName = CommandLine.arguments[0].lastPathComponent
-            #endif
-
-            #if DEBUG
-            // for testing in Xcode
-            let path = "~/Documents/Code/image-munger".expandingTildeInPath
-            FileManager.default.changeCurrentDirectoryPath(path)
             #endif
 
             baseDirectory = FileManager.default.currentDirectoryPath

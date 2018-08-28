@@ -7,8 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB1BCF8821396CDB006F3D04 /* ImageMungerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF8721396CDB006F3D04 /* ImageMungerTests.swift */; };
+		DB1BCF8D21396ECF006F3D04 /* libCommandLineCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE2DA282130CBB40056C931 /* libCommandLineCore.a */; };
+		DB1BCF8E21396EDC006F3D04 /* CommandDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */; };
+		DB1BCF8F21396EDC006F3D04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
+		DB1BCF9021396EDC006F3D04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
+		DB1BCF9121396EDC006F3D04 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDD18302136D27500C84FF0 /* Plan.swift */; };
+		DB1BCF9221396EDF006F3D04 /* ProcessCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA2F213186EB0056C931 /* ProcessCommand.swift */; };
+		DB1BCFAD213979F1006F3D04 /* Mappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF94213979F1006F3D04 /* Mappable.swift */; };
+		DB1BCFAE213979F1006F3D04 /* Mappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF94213979F1006F3D04 /* Mappable.swift */; };
+		DB1BCFAF213979F1006F3D04 /* CustomDateFormatTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF95213979F1006F3D04 /* CustomDateFormatTransform.swift */; };
+		DB1BCFB0213979F1006F3D04 /* CustomDateFormatTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF95213979F1006F3D04 /* CustomDateFormatTransform.swift */; };
+		DB1BCFB1213979F1006F3D04 /* HexColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF96213979F1006F3D04 /* HexColorTransform.swift */; };
+		DB1BCFB2213979F1006F3D04 /* HexColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF96213979F1006F3D04 /* HexColorTransform.swift */; };
+		DB1BCFB3213979F1006F3D04 /* ISO8601DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF98213979F1006F3D04 /* ISO8601DateTransform.swift */; };
+		DB1BCFB4213979F1006F3D04 /* ISO8601DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF98213979F1006F3D04 /* ISO8601DateTransform.swift */; };
+		DB1BCFB5213979F1006F3D04 /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF99213979F1006F3D04 /* URLTransform.swift */; };
+		DB1BCFB6213979F1006F3D04 /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF99213979F1006F3D04 /* URLTransform.swift */; };
+		DB1BCFB7213979F1006F3D04 /* NSDecimalNumberTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9A213979F1006F3D04 /* NSDecimalNumberTransform.swift */; };
+		DB1BCFB8213979F1006F3D04 /* NSDecimalNumberTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9A213979F1006F3D04 /* NSDecimalNumberTransform.swift */; };
+		DB1BCFB9213979F1006F3D04 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9B213979F1006F3D04 /* Operators.swift */; };
+		DB1BCFBA213979F1006F3D04 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9B213979F1006F3D04 /* Operators.swift */; };
+		DB1BCFBB213979F1006F3D04 /* EnumOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9C213979F1006F3D04 /* EnumOperators.swift */; };
+		DB1BCFBC213979F1006F3D04 /* EnumOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9C213979F1006F3D04 /* EnumOperators.swift */; };
+		DB1BCFBD213979F1006F3D04 /* EnumTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9D213979F1006F3D04 /* EnumTransform.swift */; };
+		DB1BCFBE213979F1006F3D04 /* EnumTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9D213979F1006F3D04 /* EnumTransform.swift */; };
+		DB1BCFBF213979F1006F3D04 /* DataTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9E213979F1006F3D04 /* DataTransform.swift */; };
+		DB1BCFC0213979F1006F3D04 /* DataTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9E213979F1006F3D04 /* DataTransform.swift */; };
+		DB1BCFC1213979F1006F3D04 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9F213979F1006F3D04 /* Mapper.swift */; };
+		DB1BCFC2213979F1006F3D04 /* Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCF9F213979F1006F3D04 /* Mapper.swift */; };
+		DB1BCFC3213979F1006F3D04 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA0213979F1006F3D04 /* Map.swift */; };
+		DB1BCFC4213979F1006F3D04 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA0213979F1006F3D04 /* Map.swift */; };
+		DB1BCFC5213979F1006F3D04 /* FromJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA1213979F1006F3D04 /* FromJSON.swift */; };
+		DB1BCFC6213979F1006F3D04 /* FromJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA1213979F1006F3D04 /* FromJSON.swift */; };
+		DB1BCFC7213979F1006F3D04 /* DictionaryTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA2213979F1006F3D04 /* DictionaryTransform.swift */; };
+		DB1BCFC8213979F1006F3D04 /* DictionaryTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA2213979F1006F3D04 /* DictionaryTransform.swift */; };
+		DB1BCFC9213979F1006F3D04 /* TransformOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA3213979F1006F3D04 /* TransformOperators.swift */; };
+		DB1BCFCA213979F1006F3D04 /* TransformOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA3213979F1006F3D04 /* TransformOperators.swift */; };
+		DB1BCFCB213979F1006F3D04 /* ImmutableMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA4213979F1006F3D04 /* ImmutableMappable.swift */; };
+		DB1BCFCC213979F1006F3D04 /* ImmutableMappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA4213979F1006F3D04 /* ImmutableMappable.swift */; };
+		DB1BCFCD213979F1006F3D04 /* IntegerOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA5213979F1006F3D04 /* IntegerOperators.swift */; };
+		DB1BCFCE213979F1006F3D04 /* IntegerOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA5213979F1006F3D04 /* IntegerOperators.swift */; };
+		DB1BCFCF213979F1006F3D04 /* TransformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA6213979F1006F3D04 /* TransformType.swift */; };
+		DB1BCFD0213979F1006F3D04 /* TransformType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA6213979F1006F3D04 /* TransformType.swift */; };
+		DB1BCFD1213979F1006F3D04 /* MapError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA7213979F1006F3D04 /* MapError.swift */; };
+		DB1BCFD2213979F1006F3D04 /* MapError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA7213979F1006F3D04 /* MapError.swift */; };
+		DB1BCFD3213979F1006F3D04 /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA8213979F1006F3D04 /* DateTransform.swift */; };
+		DB1BCFD4213979F1006F3D04 /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA8213979F1006F3D04 /* DateTransform.swift */; };
+		DB1BCFD5213979F1006F3D04 /* DateFormatterTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA9213979F1006F3D04 /* DateFormatterTransform.swift */; };
+		DB1BCFD6213979F1006F3D04 /* DateFormatterTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFA9213979F1006F3D04 /* DateFormatterTransform.swift */; };
+		DB1BCFD8213979F1006F3D04 /* ToJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFAB213979F1006F3D04 /* ToJSON.swift */; };
+		DB1BCFD9213979F1006F3D04 /* ToJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFAB213979F1006F3D04 /* ToJSON.swift */; };
+		DB1BCFDA213979F1006F3D04 /* TransformOf.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFAC213979F1006F3D04 /* TransformOf.swift */; };
+		DB1BCFDB213979F1006F3D04 /* TransformOf.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFAC213979F1006F3D04 /* TransformOf.swift */; };
+		DB1BCFE021397C68006F3D04 /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFDF21397C68006F3D04 /* Mappings.swift */; };
+		DB1BCFE121397C68006F3D04 /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFDF21397C68006F3D04 /* Mappings.swift */; };
 		DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
 		DBCB90562134402000CB3B04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
+		DBDD18312136D27500C84FF0 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDD18302136D27500C84FF0 /* Plan.swift */; };
 		DBE2DA212130CA160056C931 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA202130CA160056C931 /* main.swift */; };
 		DBE2DA292130CBB40056C931 /* libCommandLineCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBE2DA282130CBB40056C931 /* libCommandLineCore.a */; };
 		DBE2DA2C2130CCD00056C931 /* CommandDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */; };
@@ -28,10 +84,38 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DB1BCF8521396CDB006F3D04 /* ImageMungerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageMungerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB1BCF8721396CDB006F3D04 /* ImageMungerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMungerTests.swift; sourceTree = "<group>"; };
+		DB1BCF8921396CDB006F3D04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DB1BCF94213979F1006F3D04 /* Mappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mappable.swift; sourceTree = "<group>"; };
+		DB1BCF95213979F1006F3D04 /* CustomDateFormatTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomDateFormatTransform.swift; sourceTree = "<group>"; };
+		DB1BCF96213979F1006F3D04 /* HexColorTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexColorTransform.swift; sourceTree = "<group>"; };
+		DB1BCF98213979F1006F3D04 /* ISO8601DateTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ISO8601DateTransform.swift; sourceTree = "<group>"; };
+		DB1BCF99213979F1006F3D04 /* URLTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLTransform.swift; sourceTree = "<group>"; };
+		DB1BCF9A213979F1006F3D04 /* NSDecimalNumberTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDecimalNumberTransform.swift; sourceTree = "<group>"; };
+		DB1BCF9B213979F1006F3D04 /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
+		DB1BCF9C213979F1006F3D04 /* EnumOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumOperators.swift; sourceTree = "<group>"; };
+		DB1BCF9D213979F1006F3D04 /* EnumTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTransform.swift; sourceTree = "<group>"; };
+		DB1BCF9E213979F1006F3D04 /* DataTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTransform.swift; sourceTree = "<group>"; };
+		DB1BCF9F213979F1006F3D04 /* Mapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mapper.swift; sourceTree = "<group>"; };
+		DB1BCFA0213979F1006F3D04 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		DB1BCFA1213979F1006F3D04 /* FromJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromJSON.swift; sourceTree = "<group>"; };
+		DB1BCFA2213979F1006F3D04 /* DictionaryTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryTransform.swift; sourceTree = "<group>"; };
+		DB1BCFA3213979F1006F3D04 /* TransformOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformOperators.swift; sourceTree = "<group>"; };
+		DB1BCFA4213979F1006F3D04 /* ImmutableMappable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmutableMappable.swift; sourceTree = "<group>"; };
+		DB1BCFA5213979F1006F3D04 /* IntegerOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegerOperators.swift; sourceTree = "<group>"; };
+		DB1BCFA6213979F1006F3D04 /* TransformType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformType.swift; sourceTree = "<group>"; };
+		DB1BCFA7213979F1006F3D04 /* MapError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapError.swift; sourceTree = "<group>"; };
+		DB1BCFA8213979F1006F3D04 /* DateTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateTransform.swift; sourceTree = "<group>"; };
+		DB1BCFA9213979F1006F3D04 /* DateFormatterTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatterTransform.swift; sourceTree = "<group>"; };
+		DB1BCFAB213979F1006F3D04 /* ToJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToJSON.swift; sourceTree = "<group>"; };
+		DB1BCFAC213979F1006F3D04 /* TransformOf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformOf.swift; sourceTree = "<group>"; };
+		DB1BCFDF21397C68006F3D04 /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
+		DBB2006121389DC500519BC3 /* testing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = testing; sourceTree = "<group>"; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
-		DBCB905421343F2900CB3B04 /* manifest.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = manifest.txt; path = testing/manifest.txt; sourceTree = "<group>"; };
 		DBCB90552134402000CB3B04 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		DBDD18302136D27500C84FF0 /* Plan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plan.swift; sourceTree = "<group>"; };
 		DBE2DA1D2130CA160056C931 /* imp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = imp; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE2DA202130CA160056C931 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		DBE2DA282130CBB40056C931 /* libCommandLineCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libCommandLineCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +126,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		DB1BCF8221396CDB006F3D04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB1BCF8D21396ECF006F3D04 /* libCommandLineCore.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE2DA1A2130CA160056C931 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,14 +145,72 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB1BCF8621396CDB006F3D04 /* ImageMungerTests */ = {
+			isa = PBXGroup;
+			children = (
+				DB1BCF8721396CDB006F3D04 /* ImageMungerTests.swift */,
+				DB1BCF8921396CDB006F3D04 /* Info.plist */,
+			);
+			path = ImageMungerTests;
+			sourceTree = "<group>";
+		};
+		DB1BCF93213979F1006F3D04 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				DB1BCF94213979F1006F3D04 /* Mappable.swift */,
+				DB1BCF95213979F1006F3D04 /* CustomDateFormatTransform.swift */,
+				DB1BCF96213979F1006F3D04 /* HexColorTransform.swift */,
+				DB1BCF98213979F1006F3D04 /* ISO8601DateTransform.swift */,
+				DB1BCF99213979F1006F3D04 /* URLTransform.swift */,
+				DB1BCF9A213979F1006F3D04 /* NSDecimalNumberTransform.swift */,
+				DB1BCF9B213979F1006F3D04 /* Operators.swift */,
+				DB1BCF9C213979F1006F3D04 /* EnumOperators.swift */,
+				DB1BCF9D213979F1006F3D04 /* EnumTransform.swift */,
+				DB1BCF9E213979F1006F3D04 /* DataTransform.swift */,
+				DB1BCF9F213979F1006F3D04 /* Mapper.swift */,
+				DB1BCFA0213979F1006F3D04 /* Map.swift */,
+				DB1BCFA1213979F1006F3D04 /* FromJSON.swift */,
+				DB1BCFA2213979F1006F3D04 /* DictionaryTransform.swift */,
+				DB1BCFA3213979F1006F3D04 /* TransformOperators.swift */,
+				DB1BCFA4213979F1006F3D04 /* ImmutableMappable.swift */,
+				DB1BCFA5213979F1006F3D04 /* IntegerOperators.swift */,
+				DB1BCFA6213979F1006F3D04 /* TransformType.swift */,
+				DB1BCFA7213979F1006F3D04 /* MapError.swift */,
+				DB1BCFA8213979F1006F3D04 /* DateTransform.swift */,
+				DB1BCFA9213979F1006F3D04 /* DateFormatterTransform.swift */,
+				DB1BCFAB213979F1006F3D04 /* ToJSON.swift */,
+				DB1BCFAC213979F1006F3D04 /* TransformOf.swift */,
+			);
+			name = Sources;
+			path = submodules/ObjectMapper/Sources;
+			sourceTree = "<group>";
+		};
+		DB1BCFDD21397AB8006F3D04 /* ObjectMapper */ = {
+			isa = PBXGroup;
+			children = (
+				DB1BCFDE21397AD0006F3D04 /* Sources */,
+			);
+			path = ObjectMapper;
+			sourceTree = "<group>";
+		};
+		DB1BCFDE21397AD0006F3D04 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		DBE2DA142130CA160056C931 = {
 			isa = PBXGroup;
 			children = (
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
-				DBCB905421343F2900CB3B04 /* manifest.txt */,
+				DBB2006121389DC500519BC3 /* testing */,
 				DBE2DA2E213185850056C931 /* imgx.go */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
+				DB1BCFDD21397AB8006F3D04 /* ObjectMapper */,
+				DB1BCF93213979F1006F3D04 /* Sources */,
+				DB1BCF8621396CDB006F3D04 /* ImageMungerTests */,
 				DBE2DA1E2130CA160056C931 /* Products */,
 				DBE2DA272130CBB40056C931 /* Frameworks */,
 			);
@@ -70,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				DBE2DA1D2130CA160056C931 /* imp */,
+				DB1BCF8521396CDB006F3D04 /* ImageMungerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -81,6 +232,8 @@
 				DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */,
 				DBCB90522133662C00CB3B04 /* Manifest.swift */,
 				DBCB90552134402000CB3B04 /* Configuration.swift */,
+				DBDD18302136D27500C84FF0 /* Plan.swift */,
+				DB1BCFDF21397C68006F3D04 /* Mappings.swift */,
 				DBE2DA2B2130CCD00056C931 /* CommandHandlers */,
 			);
 			path = "image-munger";
@@ -105,6 +258,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		DB1BCF8421396CDB006F3D04 /* ImageMungerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB1BCF8C21396CDB006F3D04 /* Build configuration list for PBXNativeTarget "ImageMungerTests" */;
+			buildPhases = (
+				DB1BCF8121396CDB006F3D04 /* Sources */,
+				DB1BCF8221396CDB006F3D04 /* Frameworks */,
+				DB1BCF8321396CDB006F3D04 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ImageMungerTests;
+			productName = ImageMungerTests;
+			productReference = DB1BCF8521396CDB006F3D04 /* ImageMungerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DBE2DA1C2130CA160056C931 /* image-munger */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DBE2DA242130CA160056C931 /* Build configuration list for PBXNativeTarget "image-munger" */;
@@ -133,6 +303,9 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = droolingcat.com;
 				TargetAttributes = {
+					DB1BCF8421396CDB006F3D04 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
 					DBE2DA1C2130CA160056C931 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
@@ -151,9 +324,20 @@
 			projectRoot = "";
 			targets = (
 				DBE2DA1C2130CA160056C931 /* image-munger */,
+				DB1BCF8421396CDB006F3D04 /* ImageMungerTests */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DB1BCF8321396CDB006F3D04 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		DBCB904E213316A500CB3B04 /* swiftlint */ = {
@@ -173,14 +357,76 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DB1BCF8121396CDB006F3D04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB1BCFE121397C68006F3D04 /* Mappings.swift in Sources */,
+				DB1BCFD2213979F1006F3D04 /* MapError.swift in Sources */,
+				DB1BCFBE213979F1006F3D04 /* EnumTransform.swift in Sources */,
+				DB1BCFBC213979F1006F3D04 /* EnumOperators.swift in Sources */,
+				DB1BCFDB213979F1006F3D04 /* TransformOf.swift in Sources */,
+				DB1BCFB0213979F1006F3D04 /* CustomDateFormatTransform.swift in Sources */,
+				DB1BCFD9213979F1006F3D04 /* ToJSON.swift in Sources */,
+				DB1BCF8E21396EDC006F3D04 /* CommandDefinition.swift in Sources */,
+				DB1BCFD0213979F1006F3D04 /* TransformType.swift in Sources */,
+				DB1BCFD4213979F1006F3D04 /* DateTransform.swift in Sources */,
+				DB1BCFC0213979F1006F3D04 /* DataTransform.swift in Sources */,
+				DB1BCFAE213979F1006F3D04 /* Mappable.swift in Sources */,
+				DB1BCF8821396CDB006F3D04 /* ImageMungerTests.swift in Sources */,
+				DB1BCF9021396EDC006F3D04 /* Configuration.swift in Sources */,
+				DB1BCFCC213979F1006F3D04 /* ImmutableMappable.swift in Sources */,
+				DB1BCFB6213979F1006F3D04 /* URLTransform.swift in Sources */,
+				DB1BCFB4213979F1006F3D04 /* ISO8601DateTransform.swift in Sources */,
+				DB1BCFD6213979F1006F3D04 /* DateFormatterTransform.swift in Sources */,
+				DB1BCFCA213979F1006F3D04 /* TransformOperators.swift in Sources */,
+				DB1BCFC2213979F1006F3D04 /* Mapper.swift in Sources */,
+				DB1BCF8F21396EDC006F3D04 /* Manifest.swift in Sources */,
+				DB1BCFCE213979F1006F3D04 /* IntegerOperators.swift in Sources */,
+				DB1BCFB2213979F1006F3D04 /* HexColorTransform.swift in Sources */,
+				DB1BCFBA213979F1006F3D04 /* Operators.swift in Sources */,
+				DB1BCFC8213979F1006F3D04 /* DictionaryTransform.swift in Sources */,
+				DB1BCFC6213979F1006F3D04 /* FromJSON.swift in Sources */,
+				DB1BCF9121396EDC006F3D04 /* Plan.swift in Sources */,
+				DB1BCFB8213979F1006F3D04 /* NSDecimalNumberTransform.swift in Sources */,
+				DB1BCFC4213979F1006F3D04 /* Map.swift in Sources */,
+				DB1BCF9221396EDF006F3D04 /* ProcessCommand.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DBE2DA192130CA160056C931 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB1BCFE021397C68006F3D04 /* Mappings.swift in Sources */,
+				DB1BCFD1213979F1006F3D04 /* MapError.swift in Sources */,
+				DB1BCFBD213979F1006F3D04 /* EnumTransform.swift in Sources */,
+				DB1BCFBB213979F1006F3D04 /* EnumOperators.swift in Sources */,
+				DB1BCFDA213979F1006F3D04 /* TransformOf.swift in Sources */,
+				DB1BCFAF213979F1006F3D04 /* CustomDateFormatTransform.swift in Sources */,
+				DB1BCFD8213979F1006F3D04 /* ToJSON.swift in Sources */,
 				DBCB90562134402000CB3B04 /* Configuration.swift in Sources */,
+				DB1BCFCF213979F1006F3D04 /* TransformType.swift in Sources */,
+				DB1BCFD3213979F1006F3D04 /* DateTransform.swift in Sources */,
+				DB1BCFBF213979F1006F3D04 /* DataTransform.swift in Sources */,
+				DB1BCFAD213979F1006F3D04 /* Mappable.swift in Sources */,
 				DBE2DA2C2130CCD00056C931 /* CommandDefinition.swift in Sources */,
+				DBDD18312136D27500C84FF0 /* Plan.swift in Sources */,
+				DB1BCFCB213979F1006F3D04 /* ImmutableMappable.swift in Sources */,
+				DB1BCFB5213979F1006F3D04 /* URLTransform.swift in Sources */,
+				DB1BCFB3213979F1006F3D04 /* ISO8601DateTransform.swift in Sources */,
+				DB1BCFD5213979F1006F3D04 /* DateFormatterTransform.swift in Sources */,
+				DB1BCFC9213979F1006F3D04 /* TransformOperators.swift in Sources */,
+				DB1BCFC1213979F1006F3D04 /* Mapper.swift in Sources */,
 				DBE2DA212130CA160056C931 /* main.swift in Sources */,
+				DB1BCFCD213979F1006F3D04 /* IntegerOperators.swift in Sources */,
+				DB1BCFB1213979F1006F3D04 /* HexColorTransform.swift in Sources */,
+				DB1BCFB9213979F1006F3D04 /* Operators.swift in Sources */,
+				DB1BCFC7213979F1006F3D04 /* DictionaryTransform.swift in Sources */,
+				DB1BCFC5213979F1006F3D04 /* FromJSON.swift in Sources */,
 				DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */,
+				DB1BCFB7213979F1006F3D04 /* NSDecimalNumberTransform.swift in Sources */,
+				DB1BCFC3213979F1006F3D04 /* Map.swift in Sources */,
 				DBE2DA30213186EB0056C931 /* ProcessCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,6 +434,42 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		DB1BCF8A21396CDB006F3D04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5886TSL9MF;
+				INFOPLIST_FILE = ImageMungerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.droolingcat.ImageMungerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		DB1BCF8B21396CDB006F3D04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 5886TSL9MF;
+				INFOPLIST_FILE = ImageMungerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.droolingcat.ImageMungerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 		DBE2DA222130CA160056C931 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -324,6 +606,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DB1BCF8C21396CDB006F3D04 /* Build configuration list for PBXNativeTarget "ImageMungerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB1BCF8A21396CDB006F3D04 /* Debug */,
+				DB1BCF8B21396CDB006F3D04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DBE2DA182130CA160056C931 /* Build configuration list for PBXProject "image-munger" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

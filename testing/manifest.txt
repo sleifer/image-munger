@@ -1,2 +1,6 @@
-shuttle_alpha.png
-moon.jpg
+# Test Preset largeSticker
+= src,~~
+= dst,~/Desktop/Sticker Pack.stickerpack
+= preset,largeSticker
+= out-package, stickerpack
+= out-package-replace, true

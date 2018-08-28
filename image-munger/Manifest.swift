@@ -12,6 +12,7 @@ class Manifest {
     var path: String
     var settings: [String: String]
     var files: [String]
+
     lazy var configuration: Configuation = {
         return makeConfiguration()
     }()
@@ -67,14 +68,14 @@ class Manifest {
                     config.outPackageReplace = false
                 }
             case "scale":
-                config.scale = Double(value)
+                config.scale = Double(value) ?? 0.0
             case "max-px":
-                config.maxWidth = Int(value)
+                config.maxWidth = Int(value) ?? 0
                 config.maxHeight = config.maxWidth
             case "max-width-px":
-                config.maxWidth = Int(value)
+                config.maxWidth = Int(value) ?? 0
             case "max-height-px":
-                config.maxHeight = Int(value)
+                config.maxHeight = Int(value) ?? 0
             default:
                 break
             }
@@ -83,5 +84,4 @@ class Manifest {
     }
 
     // swiftlint:enable cyclomatic_complexity
-
 }
