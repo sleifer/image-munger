@@ -73,14 +73,26 @@ class ImageMungerTests: XCTestCase {
         }
     }
 
+    @discardableResult
+    func prepareDirectory(dstSubPath: String) throws -> String {
+        let dstPath = ImageMungerTests.deskPath.appendingPathComponent(dstSubPath)
+
+        try FileManager.default.createDirectory(atPath: dstPath, withIntermediateDirectories: true, attributes: nil)
+
+        return dstPath
+    }
+
     class func cleanupFile(_ path: String) throws {
         let url = URL(fileURLWithPath: path)
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 
     func testManifest() throws {
+        try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "smallSticker.xcstickers")
+        try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "mediumSticker.xcstickers")
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "largeSticker.xcstickers")
-        
+        try prepareDirectory(dstSubPath: "thumb256")
+
         let manifestPath = try testFilePath(srcSubPath: "manifest.txt")
         let process = ProcessCommand()
         var cmd = ParsedCommand()

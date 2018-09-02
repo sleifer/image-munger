@@ -9,7 +9,7 @@
 import Foundation
 
 class Manifest {
-    var path: String
+    var manifestPath: String
     var outputDir: String
     var settings: [String: String]
     var files: [String]
@@ -19,7 +19,7 @@ class Manifest {
     }()
 
     init(path: String, outputDir: String) {
-        self.path = path
+        self.manifestPath = path
         self.outputDir = outputDir
         settings = [:]
         files = []
@@ -29,7 +29,7 @@ class Manifest {
         if path.hasPrefix("~~~") {
             return outputDir.appendingPathComponent(path.suffix(from: 3))
         } else if path.hasPrefix("~~") {
-            return path.deletingLastPathComponent.appendingPathComponent(path.suffix(from: 2))
+            return manifestPath.deletingLastPathComponent.appendingPathComponent(path.suffix(from: 2))
         } else {
             return path.expandingTildeInPath
         }

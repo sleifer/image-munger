@@ -17,6 +17,19 @@ enum PresetType: String {
     case imageSet
     case imageSetForLargeSticker
     case imageFileForLargeSticker
+
+    func stickerSizeString() -> String {
+        switch self {
+        case .smallSticker:
+            return "small"
+        case .mediumSticker:
+            return "regular"
+        case .largeSticker:
+            return "large"
+        default:
+            return "regular"
+        }
+    }
 }
 
 enum ImageFormat: String {

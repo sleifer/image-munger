@@ -201,6 +201,7 @@ class ProcessCommand: Command {
             if cfg.outPackageReplace == true {
                 clearStickerPack(folder: cfg.dstDirPath)
             }
+            setStickerPackSize(cfg.dstDirPath, size: cfg.preset.stickerSizeString())
         case .imageSet:
             // no pre-action
             break
@@ -255,6 +256,29 @@ class ProcessCommand: Command {
         context.clear(dstRect)
         context.draw(image, in: dstRect)
         return context.makeImage()
+    }
+
+    func setStickerPackSize(_ path: String, size: String) {
+        var contents: StickerPackContents?
+
+        let contentsPath = path.appendingPathComponent("Contents.json")
+        do {
+            let json = try String(contentsOfFile: contentsPath)
+            contents = StickerPackContents(JSONString: json)
+        } catch {
+            print("Error in setStickerPackSize: \(error)")
+        }
+
+        if let contents = contents {
+            contents.properties.gridSize = size
+
+            do {
+                let JSONString = contents.toJSONString(prettyPrint: true)
+                try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
+            } catch {
+                print("Error in setStickerPackSize: \(error)")
+            }
+        }
     }
 
     func insertStickerToPack(_ path: String) -> String {
@@ -663,7 +687,13 @@ class ProcessCommand: Command {
                     let newHeight = (Double(srcImage.height) * Double(plan.boxWidth) / Double(srcImage.width)).rounded(.down)
                     dstImage = scale(image: srcImage, width: newWidth, height: Int(newHeight))
                 } else {
-                    dstImage = scale(image: srcImage, width: plan.boxWidth, height: plan.boxHeight)
+                    var newWidth = Int((Double(srcImage.width) * Double(plan.boxHeight) / Double(srcImage.height)).rounded(.down))
+                    var newHeight = plan.boxHeight
+                    if newWidth > plan.boxWidth {
+                        newWidth = plan.boxWidth
+                        newHeight = Int((Double(srcImage.height) * Double(plan.boxWidth) / Double(srcImage.width)).rounded(.down))
+                    }
+                    dstImage = scale(image: srcImage, width: newWidth, height: newHeight)
                 }
             }
 

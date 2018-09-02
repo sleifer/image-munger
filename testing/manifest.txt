@@ -1,6 +1,31 @@
+# Test Preset smallSticker
+= src,~~
+= dst,~~~/smallSticker.xcstickers/Sticker Pack.stickerpack
+= preset,smallSticker
+= out-package, stickerpack
+= out-package-replace, true
+--
+# Test Preset mediumSticker
+= src,~~
+= dst,~~~/mediumSticker.xcstickers/Sticker Pack.stickerpack
+= preset,mediumSticker
+= out-package, stickerpack
+= out-package-replace, true
+--
 # Test Preset largeSticker
 = src,~~
 = dst,~~~/largeSticker.xcstickers/Sticker Pack.stickerpack
 = preset,largeSticker
 = out-package, stickerpack
 = out-package-replace, true
+--
+# Test Preset thumb256
+= src,~~
+= dst,~~~/thumb256
+= preset,thumb256
+
+
+
+# Test Preset imageSet
+# Test Preset imageSetForLargeSticker
+# Test Preset imageFileForLargeSticker
