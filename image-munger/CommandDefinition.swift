@@ -37,6 +37,14 @@ private func processCommand() -> SubcommandDefinition {
     command.synopsis = "Process images according to manifest file."
     command.hasFileParameters = true
 
+    var output = CommandOption()
+    output.shortOption = "-o"
+    output.longOption = "--output"
+    output.help = "Output directory"
+    output.argumentCount = 1
+    output.hasFileArguments = true
+    command.options.append(output)
+
     var parameter = ParameterInfo()
     parameter.help = "manifest file"
     command.requiredParameters.append(parameter)

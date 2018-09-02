@@ -1,6 +1,6 @@
 # Test Preset largeSticker
 = src,~~
-= dst,~/Desktop/Sticker Pack.stickerpack
+= dst,~~~/largeSticker.xcstickers/Sticker Pack.stickerpack
 = preset,largeSticker
 = out-package, stickerpack
 = out-package-replace, true

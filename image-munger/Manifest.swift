@@ -10,6 +10,7 @@ import Foundation
 
 class Manifest {
     var path: String
+    var outputDir: String
     var settings: [String: String]
     var files: [String]
 
@@ -17,10 +18,21 @@ class Manifest {
         return makeConfiguration()
     }()
 
-    init(path: String) {
+    init(path: String, outputDir: String) {
         self.path = path
+        self.outputDir = outputDir
         settings = [:]
         files = []
+    }
+
+    func expandPathSetting(_ path: String) -> String {
+        if path.hasPrefix("~~~") {
+            return outputDir.appendingPathComponent(path.suffix(from: 3))
+        } else if path.hasPrefix("~~") {
+            return path.deletingLastPathComponent.appendingPathComponent(path.suffix(from: 2))
+        } else {
+            return path.expandingTildeInPath
+        }
     }
 
     // swiftlint:disable cyclomatic_complexity
@@ -30,17 +42,9 @@ class Manifest {
         for (key, value) in settings {
             switch key {
             case "src":
-                if value.hasPrefix("~~") {
-                    config.srcDirPath = path.deletingLastPathComponent.appendingPathComponent(value.suffix(from: 2))
-                } else {
-                    config.srcDirPath = value.expandingTildeInPath
-                }
+                config.srcDirPath = expandPathSetting(value)
             case "dst":
-                if value.hasPrefix("~~") {
-                    config.dstDirPath = path.deletingLastPathComponent.appendingPathComponent(value.suffix(from: 2))
-                } else {
-                    config.dstDirPath = value.expandingTildeInPath
-                }
+                config.dstDirPath = expandPathSetting(value)
             case "preset":
                 if let theValue = PresetType(rawValue: value) {
                     config.preset = theValue
@@ -48,11 +52,7 @@ class Manifest {
             case "valid-format":
                 break
             case "out-manifest":
-                if value.hasPrefix("~~") {
-                    config.outManifestPath = path.deletingLastPathComponent.appendingPathComponent(value.suffix(from: 2))
-                } else {
-                    config.outManifestPath = value.expandingTildeInPath
-                }
+                config.outManifestPath = expandPathSetting(value)
             case "out-format":
                 if let theValue = ImageFormat(rawValue: value) {
                     config.outputFormat = theValue

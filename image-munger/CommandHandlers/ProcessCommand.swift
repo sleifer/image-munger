@@ -16,10 +16,15 @@ class ProcessCommand: Command {
             return
         }
 
+        var outputDir = FileManager.default.currentDirectoryPath
+        if let option = cmd.option("--output") {
+            outputDir = option.arguments[0].expandingTildeInPath
+        }
+
         var manifests: [Manifest] = []
 
         for manifestPath in cmd.parameters {
-            let additionalManifests = readManifest(manifestPath)
+            let additionalManifests = readManifest(manifestPath, outputDir: outputDir)
             manifests.append(contentsOf: additionalManifests)
         }
 
@@ -38,9 +43,9 @@ class ProcessCommand: Command {
         print("Done.")
     }
 
-    func readManifest(_ path: String) -> [Manifest] {
+    func readManifest(_ path: String, outputDir: String) -> [Manifest] {
         var manifests: [Manifest] = []
-        var manifest = Manifest(path: path)
+        var manifest = Manifest(path: path, outputDir: outputDir)
         do {
             let fullText = try String(contentsOfFile: path, encoding: .utf8)
             fullText.enumerateLines { (line: String, _: inout Bool) in
@@ -58,7 +63,7 @@ class ProcessCommand: Command {
                     } else if line.hasPrefix("--") == true {
                         // manifest separator
                         manifests.append(manifest)
-                        manifest = Manifest(path: path)
+                        manifest = Manifest(path: path, outputDir: outputDir)
                     } else {
                         // file
                         manifest.files.append(line)

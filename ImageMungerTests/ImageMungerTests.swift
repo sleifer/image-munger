@@ -14,15 +14,38 @@ enum TestErrors: Error {
 }
 
 class ImageMungerTests: XCTestCase {
-    override func setUp() {
+    static var deskPath: String = ""
+
+    override class func setUp() {
         super.setUp()
 
         if let projectDir = ProcessInfo.processInfo.environment["PROJECT_DIR"] {
             FileManager.default.changeCurrentDirectoryPath(projectDir)
         }
+
+        let fmt = DateFormatter()
+        fmt.dateFormat = "YYYYMMdd.HHmmss"
+
+        deskPath = "~/Desktop/" + fmt.string(from: Date())
+        deskPath = deskPath.expandingTildeInPath
+        do {
+            try FileManager.default.createDirectory(atPath: deskPath, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print("Error creating output directory: \(error)")
+        }
     }
 
-    override func tearDown() {
+    fileprivate static func cleanup() {
+        do {
+            try cleanupFile(deskPath)
+        } catch {
+            print("Error cleaning up output directory: \(error)")
+        }
+    }
+
+    override class func tearDown() {
+//        cleanup()
+
         super.tearDown()
     }
 
@@ -36,54 +59,52 @@ class ImageMungerTests: XCTestCase {
         }
     }
 
-    func prepareFiles(srcSubPath: String, dstSubPath: String) throws {
+    @discardableResult
+    func prepareFiles(srcSubPath: String, dstSubPath: String) throws -> String {
         if let projectDir = ProcessInfo.processInfo.environment["PROJECT_DIR"] {
             let packPath = projectDir.appendingPathComponent("testing").appendingPathComponent(srcSubPath)
-            let deskPath = "~/Desktop".expandingTildeInPath.appendingPathComponent(dstSubPath)
+            let dstPath = ImageMungerTests.deskPath.appendingPathComponent(dstSubPath)
 
-            try FileManager.default.copyItem(atPath: packPath, toPath: deskPath)
+            try FileManager.default.copyItem(atPath: packPath, toPath: dstPath)
+
+            return dstPath
         } else {
             throw TestErrors.noProjectDir
         }
     }
 
-    func cleanupFiles(dstSubPath: String) throws {
-        let deskUrl = URL(fileURLWithPath: "~/Desktop".expandingTildeInPath.appendingPathComponent(dstSubPath))
-
-        try FileManager.default.trashItem(at: deskUrl, resultingItemURL: nil)
+    class func cleanupFile(_ path: String) throws {
+        let url = URL(fileURLWithPath: path)
+        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 
-    func testManifest() {
-        XCTAssertNoThrow(try prepareFiles(srcSubPath: "test.xcstickers/Sticker Pack.stickerpack", dstSubPath: "Sticker Pack.stickerpack"))
-        var manifestPath: String?
-        XCTAssertNoThrow(manifestPath = try testFilePath(srcSubPath: "manifest.txt"))
+    func testManifest() throws {
+        try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "largeSticker.xcstickers")
+        
+        let manifestPath = try testFilePath(srcSubPath: "manifest.txt")
         let process = ProcessCommand()
         var cmd = ParsedCommand()
-
         cmd.toolName = "imp"
         cmd.subcommand = "process"
-        if let manifestPath = manifestPath {
-            cmd.parameters.append(manifestPath)
-        }
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
 
         process.run(cmd: cmd)
-        XCTAssertNoThrow(try cleanupFiles(dstSubPath: "Sticker Pack.stickerpack"))
     }
 
-    func testClearStickerPack() {
-        XCTAssertNoThrow(try prepareFiles(srcSubPath: "test.xcstickers/Sticker Pack.stickerpack", dstSubPath: "Sticker Pack.stickerpack"))
-        let deskPath = "~/Desktop/Sticker Pack.stickerpack".expandingTildeInPath
+    func testClearStickerPack() throws {
+        let cleanPath = try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "clearSticker.xcstickers")
         let process = ProcessCommand()
-        process.clearStickerPack(folder: deskPath)
-        XCTAssertNoThrow(try cleanupFiles(dstSubPath: "Sticker Pack.stickerpack"))
+        process.clearStickerPack(folder: cleanPath.appendingPathComponent("Sticker Pack.stickerpack"))
     }
 
-    func testClearCatalog() {
-        XCTAssertNoThrow(try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "test2.xcassets"))
-        let deskPath = "~/Desktop/test2.xcassets".expandingTildeInPath
+    func testClearCatalog() throws {
+        let cleanPath = try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "clearCatalog.xcassets")
         let process = ProcessCommand()
-        process.clearCatalog(folder: deskPath)
-        XCTAssertNoThrow(try cleanupFiles(dstSubPath: "test2.xcassets"))
+        process.clearCatalog(folder: cleanPath)
     }
 
     func testHasFileSuffix() {
