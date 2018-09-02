@@ -121,7 +121,6 @@
 		DBE2DA282130CBB40056C931 /* libCommandLineCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libCommandLineCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBE2DA2A2130CCD00056C931 /* CommandDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandDefinition.swift; sourceTree = "<group>"; };
 		DBE2DA2D2130CD060056C931 /* .module-versions */ = {isa = PBXFileReference; lastKnownFileType = text; path = ".module-versions"; sourceTree = "<group>"; };
-		DBE2DA2E213185850056C931 /* imgx.go */ = {isa = PBXFileReference; lastKnownFileType = text; path = imgx.go; sourceTree = "<group>"; };
 		DBE2DA2F213186EB0056C931 /* ProcessCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessCommand.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -206,7 +205,6 @@
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
 				DBB2006121389DC500519BC3 /* testing */,
-				DBE2DA2E213185850056C931 /* imgx.go */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
 				DB1BCFDD21397AB8006F3D04 /* ObjectMapper */,
 				DB1BCF93213979F1006F3D04 /* Sources */,

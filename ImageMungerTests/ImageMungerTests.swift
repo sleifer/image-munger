@@ -92,6 +92,11 @@ class ImageMungerTests: XCTestCase {
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "mediumSticker.xcstickers")
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "largeSticker.xcstickers")
         try prepareDirectory(dstSubPath: "thumb256")
+        try prepareFiles(srcSubPath: "test.xcassets", dstSubPath: "iconset.xcassets")
+        try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "iconset.xcstickers")
+        try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageset.xcassets")
+        try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageSetForLargeSticker.xcassets")
+        try prepareDirectory(dstSubPath: "stickerFiles")
 
         let manifestPath = try testFilePath(srcSubPath: "manifest.txt")
         let process = ProcessCommand()
