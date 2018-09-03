@@ -451,17 +451,17 @@ class ProcessCommand: Command {
                 let neededScale = image.scale
                 let currentFilename = image.filename
 
-                if neededSize.count == 0 {
+                if neededSize == nil {
                     print("Missing size.")
                     return
                 }
-                if neededScale.count == 0 {
+                if neededScale == nil {
                     print("Missing scale.")
                     return
                 }
 
-                let sizeParts = neededSize.components(separatedBy: "x")
-                let scaleParts = neededScale.components(separatedBy: "x")
+                let sizeParts = neededSize?.components(separatedBy: "x") ?? ["1"]
+                let scaleParts = neededScale?.components(separatedBy: "x") ?? ["1", "1"]
 
                 let reqScale = Double(scaleParts[0]) ?? 0.0
                 let reqWidth = Double(sizeParts[0]) ?? 0.0
@@ -470,7 +470,7 @@ class ProcessCommand: Command {
                 let neededWidth = Int(reqWidth * reqScale)
                 let neededHeight = Int(reqHeight * reqScale)
 
-                if currentFilename.count != 0 {
+                if let currentFilename = currentFilename {
                     let path = dstFolderPath.appendingPathComponent(currentFilename)
                     do {
                         try FileManager.default.removeItem(atPath: path)
@@ -494,7 +494,7 @@ class ProcessCommand: Command {
                     dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
                 }
 
-                let newSuffix = "-\(neededSize)-\(neededScale)"
+                let newSuffix = "-\(neededSize!)-\(neededScale!)"
                 dstName = dstName.changeFileSuffix(from: "", to: newSuffix)
 
                 let dstPath = dstFolderPath.appendingPathComponent(dstName)

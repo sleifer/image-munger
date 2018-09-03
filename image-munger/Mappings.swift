@@ -163,11 +163,11 @@ class ImageSetContents: Mappable {
 }
 
 class ImageSetContentsImage: Mappable {
-    var filename: String = ""
-    var idiom: String = ""
-    var scale: String = ""
-    var platform: String = ""
-    var size: String = ""
+    var filename: String?
+    var idiom: String?
+    var scale: String?
+    var platform: String?
+    var size: String?
 
     init() {
     }
