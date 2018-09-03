@@ -610,8 +610,7 @@ class ProcessCommand: Command {
             }
         }
 
-        let runner = ProcessRunner("iconutil", args: ["--convert", "icns", "--output", dstFilePath, dstFolderPath])
-        runner.start()
+        ProcessRunner.runCommand("iconutil", args: ["--convert", "icns", "--output", dstFilePath, dstFolderPath])
 
         do {
             try FileManager.default.removeItem(atPath: dstFolderPath)
