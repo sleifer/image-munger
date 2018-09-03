@@ -32,9 +32,9 @@ class ProcessCommand: Command {
 
         for manifest in manifests {
             if let error = validate(manifest: manifest) {
-                print(error)
+                print("Validate error: \(error)")
             } else if let error = collectFiles(manifest: manifest) {
-                print(error)
+                print("CollectFiles error: \(error)")
             } else {
                 process(manifest: manifest)
             }
