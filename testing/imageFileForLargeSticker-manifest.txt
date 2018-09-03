@@ -1,0 +1,5 @@
+# Test Preset imageFileForLargeSticker
+= src,~~
+= dst,~~~/stickerFiles
+= preset,imageFileForLargeSticker
+= out-package-replace, true

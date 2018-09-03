@@ -1,0 +1,7 @@
+# Test Preset imageSetForLargeSticker
+= src,~~
+= dst,~~~/imageSetForLargeSticker.xcassets
+= preset,imageSetForLargeSticker
+= out-manifest,~~~/imageSetForLargeSticker.json
+= out-package, catalog
+= out-package-replace, true

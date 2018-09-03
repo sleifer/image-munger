@@ -87,18 +87,161 @@ class ImageMungerTests: XCTestCase {
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 
-    func testManifest() throws {
+    func testManifest01_smallSticker() throws {
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "smallSticker.xcstickers")
+
+        let manifestPath = try testFilePath(srcSubPath: "smallSticker-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest02_mediumSticker() throws {
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "mediumSticker.xcstickers")
+
+        let manifestPath = try testFilePath(srcSubPath: "mediumSticker-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest03_largeSticker() throws {
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "largeSticker.xcstickers")
+
+        let manifestPath = try testFilePath(srcSubPath: "largeSticker-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest04_thumb256() throws {
         try prepareDirectory(dstSubPath: "thumb256")
+
+        let manifestPath = try testFilePath(srcSubPath: "thumb256-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest05_iconSet_app() throws {
         try prepareFiles(srcSubPath: "test.xcassets", dstSubPath: "iconset.xcassets")
+
+        let manifestPath = try testFilePath(srcSubPath: "iconSet-app-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest06_iconSet_messages() throws {
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "iconset.xcstickers")
+
+        let manifestPath = try testFilePath(srcSubPath: "iconSet-messages-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest07_icns() throws {
+        let manifestPath = try testFilePath(srcSubPath: "icns-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest08_imageSet() throws {
         try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageset.xcassets")
+
+        let manifestPath = try testFilePath(srcSubPath: "imageSet-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest09_imageSetForLargeSticker() throws {
         try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageSetForLargeSticker.xcassets")
+
+        let manifestPath = try testFilePath(srcSubPath: "imageSetForLargeSticker-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd)
+    }
+
+    func testManifest10_imageFileForLargeSticker() throws {
         try prepareDirectory(dstSubPath: "stickerFiles")
 
-        let manifestPath = try testFilePath(srcSubPath: "manifest.txt")
+        let manifestPath = try testFilePath(srcSubPath: "imageFileForLargeSticker-manifest.txt")
         let process = ProcessCommand()
         var cmd = ParsedCommand()
         cmd.toolName = "imp"
