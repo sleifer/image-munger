@@ -82,23 +82,35 @@ class ProcessCommand: Command {
         let cfg = manifest.configuration
 
         do {
-            var files = try FileManager.default.contentsOfDirectory(atPath: cfg.srcDirPath)
-            files = cfg.filterByExtension(files: files)
+            var files: [String] = []
 
-            if manifest.files.count == 0 {
-                manifest.files.append(contentsOf: files)
-                return nil
-            }
-
-            let filtered = manifest.files.filter { (item: String) -> Bool in
-                if files.contains(item) {
-                    return true
+            var isDirectory = ObjCBool(false)
+            if FileManager.default.fileExists(atPath: cfg.srcDirPath, isDirectory: &isDirectory) == true {
+                if isDirectory.boolValue == true {
+                    files = try FileManager.default.contentsOfDirectory(atPath: cfg.srcDirPath)
+                } else {
+                    files.append(cfg.srcDirPath.lastPathComponent)
+                    cfg.srcDirPath = cfg.srcDirPath.deletingLastPathComponent
                 }
-                return false
-            }
+                files = cfg.filterByExtension(files: files)
 
-            if filtered.count != manifest.files.count {
-                return "Src is missing files listed in manifest."
+                if manifest.files.count == 0 {
+                    manifest.files.append(contentsOf: files)
+                    return nil
+                }
+
+                let filtered = manifest.files.filter { (item: String) -> Bool in
+                    if files.contains(item) {
+                        return true
+                    }
+                    return false
+                }
+
+                if filtered.count != manifest.files.count {
+                    return "Src is missing files listed in manifest."
+                }
+            } else {
+                return "Src does not exist."
             }
         } catch {
             return error.localizedDescription
