@@ -5,3 +5,5 @@
 = out-manifest,~~~/imageSetForLargeSticker.json
 = out-package, catalog
 = out-package-replace, true
+moon.jpg
+shuttle.png

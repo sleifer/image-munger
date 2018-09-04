@@ -4,3 +4,5 @@
 = preset,mediumSticker
 = out-package, stickerpack
 = out-package-replace, true
+moon.jpg
+shuttle.png

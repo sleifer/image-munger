@@ -5,3 +5,4 @@
 = out-manifest,~~~/imageset.json
 = out-package, catalog
 = out-package-replace, true
+moon@3x.png
