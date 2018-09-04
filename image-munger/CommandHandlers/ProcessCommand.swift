@@ -480,7 +480,7 @@ class ProcessCommand: Command {
                     }
                 }
 
-                if let reqSuffix = plan.requiredSuffix, srcImagePath.hasSuffix(reqSuffix) == false {
+                if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
                     print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
                     continue
                 }
@@ -563,7 +563,7 @@ class ProcessCommand: Command {
             let neededWidth = Int(onePlan.scale * Double(onePlan.boxWidth))
             let neededHeight = Int(onePlan.scale * Double(onePlan.boxHeight))
 
-            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasSuffix(reqSuffix) == false {
+            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
                 print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
                 return
             }
@@ -645,7 +645,7 @@ class ProcessCommand: Command {
                 break
             }
 
-            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasSuffix(reqSuffix) == false {
+            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
                 print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
                 continue
             }
