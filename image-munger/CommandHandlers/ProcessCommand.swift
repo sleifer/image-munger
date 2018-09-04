@@ -9,6 +9,11 @@
 import Foundation
 import CommandLineCore
 
+enum ScaleMode {
+    case aspectFit
+    case fill
+}
+
 class ProcessCommand: Command {
     override func run(cmd: ParsedCommand) {
         if cmd.parameters.count == 0 {
@@ -255,18 +260,61 @@ class ProcessCommand: Command {
 
     // swiftlint:enable cyclomatic_complexity
 
-    func scale(image: CGImage, width: Int, height: Int) -> CGImage? {
-        let dstRect = CGRect(x: 0, y: 0, width: width, height: height)
+    func aspectFit(src: CGRect, dst: inout CGRect) -> CGRect {
+        var nW = dst.width
+        var nH = (src.height / src.width * nW).rounded(.down)
+
+        if nH > dst.height {
+            nH = dst.height
+            nW = (src.width / src.height * nH).rounded(.down)
+        }
+
+        dst.size.width = nW
+        dst.size.height = nH
+
+        return dst
+    }
+
+    func fill(src: CGRect, dst: CGRect) -> CGRect {
+        var nW = dst.width
+        var nH = (src.height / src.width * nW).rounded(.down)
+
+        if nH < dst.height {
+            nH = dst.height
+            nW = (src.width / src.height * nH).rounded(.down)
+        }
+
+        var newSrc = CGRect(x: 0, y: 0, width: nW, height: nH)
+        if newSrc.width > dst.width {
+            newSrc.origin.x = ((dst.width - newSrc.width) / 2.0).rounded(.towardZero)
+        } else if newSrc.height > dst.height {
+            newSrc.origin.y = ((dst.height - newSrc.height) / 2.0).rounded(.towardZero)
+        }
+
+        return newSrc
+    }
+
+    func scale(image: CGImage, width: Int, height: Int, mode: ScaleMode = .aspectFit) -> CGImage? {
+        var srcRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
+        var dstRect = CGRect(x: 0, y: 0, width: width, height: height)
+
+        switch mode {
+        case .aspectFit:
+            srcRect = aspectFit(src: srcRect, dst: &dstRect)
+        case .fill:
+            srcRect = fill(src: srcRect, dst: dstRect)
+        }
+
         let bytesPerRow = width * 4
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+        guard let context = CGContext.init(data: nil, width: Int(dstRect.width), height: Int(dstRect.height), bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
             print("Can't create CGContext")
             return nil
         }
 
         context.clear(dstRect)
-        context.draw(image, in: dstRect)
+        context.draw(image, in: srcRect)
         return context.makeImage()
     }
 
@@ -514,7 +562,7 @@ class ProcessCommand: Command {
                 var dstImage: CGImage?
 
                 if let srcImage = srcImage {
-                    dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight)
+                    dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, mode: .fill)
                 }
 
                 if let image = dstImage {
@@ -600,7 +648,7 @@ class ProcessCommand: Command {
             var dstImage: CGImage?
 
             if let srcImage = srcImage {
-                dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight)
+                dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, mode: .fill)
             }
 
             if let image = dstImage {
@@ -679,31 +727,28 @@ class ProcessCommand: Command {
             }
 
             var dstImage: CGImage?
+            var newWidth: Int = 0
+            var newHeight: Int = 0
 
             if let srcImage = srcImage {
                 if plan.scale != 0 {
                     if plan.scale != 1 {
-                        let newWidth = (Double(srcImage.width) * plan.scale).rounded(.down)
-                        let newHeight = (Double(srcImage.height) * plan.scale).rounded(.down)
-                        dstImage = scale(image: srcImage, width: Int(newWidth), height: Int(newHeight))
+                        newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
+                        newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
                     }
                 } else if plan.boxWidth == 0 && plan.boxHeight == 0 {
                     // no action
                 } else if plan.boxWidth == 0 {
-                    let newWidth = (Double(srcImage.width) * Double(plan.boxHeight) / Double(srcImage.height)).rounded(.down)
-                    let newHeight = plan.boxHeight
-                    dstImage = scale(image: srcImage, width: Int(newWidth), height: newHeight)
+                    newWidth = plan.boxHeight
+                    newHeight = plan.boxHeight
                 } else if plan.boxHeight == 0 {
-                    let newWidth = plan.boxWidth
-                    let newHeight = (Double(srcImage.height) * Double(plan.boxWidth) / Double(srcImage.width)).rounded(.down)
-                    dstImage = scale(image: srcImage, width: newWidth, height: Int(newHeight))
+                     newWidth = plan.boxWidth
+                     newHeight = plan.boxWidth
                 } else {
-                    var newWidth = Int((Double(srcImage.width) * Double(plan.boxHeight) / Double(srcImage.height)).rounded(.down))
-                    var newHeight = plan.boxHeight
-                    if newWidth > plan.boxWidth {
-                        newWidth = plan.boxWidth
-                        newHeight = Int((Double(srcImage.height) * Double(plan.boxWidth) / Double(srcImage.width)).rounded(.down))
-                    }
+                    newWidth = plan.boxWidth
+                    newHeight = plan.boxHeight
+                }
+                if newWidth != 0 && newHeight != 0 {
                     dstImage = scale(image: srcImage, width: newWidth, height: newHeight)
                 }
             }
