@@ -189,10 +189,10 @@ class Configuation {
     func makeImageSetPlans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan1 = Plan(scale: 0.33, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "")
+        let plan1 = Plan(scale: 1.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "")
         plans.append(plan1)
 
-        let plan2 = Plan(scale: 0.66, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "@2x")
+        let plan2 = Plan(scale: 2.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "@2x")
         plans.append(plan2)
 
         let plan3 = Plan(scale: 1.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x")
