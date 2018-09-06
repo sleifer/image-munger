@@ -252,9 +252,25 @@ class ProcessCommand: Command {
 
         print("Processing \(manifest.files.count) image(s)...")
 
+        var outManifest: [String] = []
+
         for file in manifest.files {
             let path = cfg.srcDirPath.appendingPathComponent(file)
             processImage(srcImagePath: path, manifest: manifest)
+
+            var name = path.lastPathComponent.changeFileExtension(to: "")
+            name = name.changeFileSuffix(from: "@2x", to: "")
+            name = name.changeFileSuffix(from: "@3x", to: "")
+            outManifest.append(name)
+        }
+
+        if let path = cfg.outManifestPath {
+            do {
+                let data = try JSONSerialization.data(withJSONObject: outManifest, options: [.prettyPrinted])
+                try data.write(to: URL(fileURLWithPath: path))
+            } catch {
+                print("Error writing out manifest: \(error)")
+            }
         }
     }
 
@@ -758,7 +774,7 @@ class ProcessCommand: Command {
                 break
             case .stickerPack:
                 dstPath = insertStickerToPack(dstPath)
-            case .imageSet:
+            case .imageSet, .catalog:
                 if oneTimeDone == false {
                     clearImageSet(dstPath)
                     oneTimeDone = true
@@ -767,8 +783,6 @@ class ProcessCommand: Command {
             case .iconSet:
                 break
             case .icns:
-                break
-            case .catalog:
                 break
             }
 

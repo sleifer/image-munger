@@ -111,7 +111,6 @@
 		DB1BCFAB213979F1006F3D04 /* ToJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToJSON.swift; sourceTree = "<group>"; };
 		DB1BCFAC213979F1006F3D04 /* TransformOf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformOf.swift; sourceTree = "<group>"; };
 		DB1BCFDF21397C68006F3D04 /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
-		DB1BCFE5213D7D53006F3D04 /* imgx.go */ = {isa = PBXFileReference; lastKnownFileType = text; path = imgx.go; sourceTree = "<group>"; };
 		DBB2006121389DC500519BC3 /* testing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = testing; sourceTree = "<group>"; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
@@ -205,7 +204,6 @@
 			children = (
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
-				DB1BCFE5213D7D53006F3D04 /* imgx.go */,
 				DBB2006121389DC500519BC3 /* testing */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
 				DB1BCFDD21397AB8006F3D04 /* ObjectMapper */,
