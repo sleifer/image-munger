@@ -417,10 +417,12 @@ class ProcessCommand: Command {
         let fm = FileManager.default
         let setPath = imageSetPathFromImagePath(path)
 
-        do {
-            try fm.removeItem(atPath: setPath)
-        } catch {
-            print("Error deleting \(setPath): \(error)")
+        if fm.fileExists(atPath: setPath) == true {
+            do {
+                try fm.removeItem(atPath: setPath)
+            } catch {
+                print("Error deleting \(setPath): \(error)")
+            }
         }
 
         do {
