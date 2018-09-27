@@ -15,7 +15,10 @@ enum ScaleMode {
 }
 
 class ProcessCommand: Command {
-    override func run(cmd: ParsedCommand) {
+    required init() {
+    }
+
+    func run(cmd: ParsedCommand, core: CommandCore) {
         if cmd.parameters.count == 0 {
             print("No manifest file specified.")
             return
@@ -46,6 +49,27 @@ class ProcessCommand: Command {
         }
 
         print("Done.")
+    }
+
+    static func commandDefinition() -> SubcommandDefinition {
+        var command = SubcommandDefinition()
+        command.name = "process"
+        command.synopsis = "Process images according to manifest file."
+        command.hasFileParameters = true
+
+        var output = CommandOption()
+        output.shortOption = "-o"
+        output.longOption = "--output"
+        output.help = "Output directory"
+        output.argumentCount = 1
+        output.hasFileArguments = true
+        command.options.append(output)
+
+        var parameter = ParameterInfo()
+        parameter.help = "manifest file"
+        command.requiredParameters.append(parameter)
+
+        return command
     }
 
     func readManifest(_ path: String, outputDir: String) -> [Manifest] {
