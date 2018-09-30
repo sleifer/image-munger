@@ -139,7 +139,7 @@ class ProcessCommand: Command {
                     return "Src is missing files listed in manifest."
                 }
             } else {
-                return "Src does not exist."
+                return "Src does not exist. [\(cfg.srcDirPath)]"
             }
         } catch {
             return error.localizedDescription

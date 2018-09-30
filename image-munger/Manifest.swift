@@ -19,8 +19,8 @@ class Manifest {
     }()
 
     init(path: String, outputDir: String) {
-        self.manifestPath = path
-        self.outputDir = outputDir
+        self.manifestPath = core.baseSubPath(path)
+        self.outputDir = core.baseSubPath(outputDir)
         settings = [:]
         files = []
     }
