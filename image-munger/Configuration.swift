@@ -8,6 +8,12 @@
 
 import Foundation
 
+enum ImageScales {
+    case oneX
+    case twoX
+    case threeX
+}
+
 enum PresetType: String {
     case none
     case smallSticker
@@ -15,8 +21,20 @@ enum PresetType: String {
     case largeSticker
     case thumb256
     case imageSet
-    case imageSetForLargeSticker
-    case imageFileForLargeSticker
+    case stickerImageSet1
+    case stickerImageSet2
+    case stickerImageSet3
+    case stickerImageSet12
+    case stickerImageSet13
+    case stickerImageSet23
+    case stickerImageSet123
+    case stickerImageFiles1
+    case stickerImageFiles2
+    case stickerImageFiles3
+    case stickerImageFiles12
+    case stickerImageFiles13
+    case stickerImageFiles23
+    case stickerImageFiles123
 
     func stickerSizeString() -> String {
         switch self {
@@ -120,6 +138,8 @@ class Configuation {
         })
     }
 
+    // swiftlint:disable cyclomatic_complexity
+
     func makePlans() -> [Plan] {
         switch preset {
         case .none:
@@ -134,12 +154,38 @@ class Configuation {
             return makeThumb256Plans()
         case .imageSet:
             return makeImageSetPlans()
-        case .imageSetForLargeSticker:
-            return makeImageSetForLargeStickerPlans()
-        case .imageFileForLargeSticker:
-            return makeImageFileForLargeStickerPlans()
+        case .stickerImageSet1:
+            return makeStickerImageSetPlans([.oneX])
+        case .stickerImageSet2:
+            return makeStickerImageSetPlans([.twoX])
+        case .stickerImageSet3:
+            return makeStickerImageSetPlans([.threeX])
+        case .stickerImageSet12:
+            return makeStickerImageSetPlans([.oneX, .twoX])
+        case .stickerImageSet13:
+            return makeStickerImageSetPlans([.oneX, .threeX])
+        case .stickerImageSet23:
+            return makeStickerImageSetPlans([.twoX, .threeX])
+        case .stickerImageSet123:
+            return makeStickerImageSetPlans([.oneX, .twoX, .threeX])
+        case .stickerImageFiles1:
+            return makeStickerImageFilesPlans([.oneX])
+        case .stickerImageFiles2:
+            return makeStickerImageFilesPlans([.twoX])
+        case .stickerImageFiles3:
+            return makeStickerImageFilesPlans([.threeX])
+        case .stickerImageFiles12:
+            return makeStickerImageFilesPlans([.oneX, .twoX])
+        case .stickerImageFiles13:
+            return makeStickerImageFilesPlans([.oneX, .threeX])
+        case .stickerImageFiles23:
+            return makeStickerImageFilesPlans([.twoX, .threeX])
+        case .stickerImageFiles123:
+            return makeStickerImageFilesPlans([.oneX, .twoX, .threeX])
         }
     }
+
+    // swiftlint:enable cyclomatic_complexity
 
     func makeNonePlans() -> [Plan] {
         var plans: [Plan] = []
@@ -201,29 +247,53 @@ class Configuation {
         return plans
     }
 
-    func makeImageSetForLargeStickerPlans() -> [Plan] {
+    func makeStickerImageSetPlans(_ scales: Set<ImageScales>) -> [Plan] {
         var plans: [Plan] = []
 
-        let plan1 = Plan(boxWidth: 1, boxHeight: 1, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "")
-        plans.append(plan1)
+        if scales.contains(.oneX) {
+            let plan1 = Plan(boxWidth: 206, boxHeight: 206, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "")
+            plans.append(plan1)
+        } else {
+            let plan1 = Plan(boxWidth: 1, boxHeight: 1, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "")
+            plans.append(plan1)
+        }
 
-        let plan2 = Plan(boxWidth: 412, boxHeight: 412, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@2x")
-        plans.append(plan2)
+        if scales.contains(.twoX) {
+            let plan2 = Plan(boxWidth: 412, boxHeight: 412, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@2x")
+            plans.append(plan2)
+        } else {
+            let plan2 = Plan(boxWidth: 1, boxHeight: 1, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@2x")
+            plans.append(plan2)
+        }
 
-        let plan3 = Plan(boxWidth: 618, boxHeight: 618, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
-        plans.append(plan3)
+        if scales.contains(.threeX) {
+            let plan3 = Plan(boxWidth: 618, boxHeight: 618, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
+            plans.append(plan3)
+        } else {
+            let plan3 = Plan(boxWidth: 1, boxHeight: 1, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
+            plans.append(plan3)
+        }
 
         return plans
     }
 
-    func makeImageFileForLargeStickerPlans() -> [Plan] {
+    func makeStickerImageFilesPlans(_ scales: Set<ImageScales>) -> [Plan] {
         var plans: [Plan] = []
 
-        let plan2 = Plan(boxWidth: 412, boxHeight: 412, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@2x")
-        plans.append(plan2)
+        if scales.contains(.oneX) {
+            let plan3 = Plan(boxWidth: 206, boxHeight: 206, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
+            plans.append(plan3)
+        }
 
-        let plan3 = Plan(boxWidth: 618, boxHeight: 618, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
-        plans.append(plan3)
+        if scales.contains(.twoX) {
+            let plan2 = Plan(boxWidth: 412, boxHeight: 412, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@2x")
+            plans.append(plan2)
+        }
+
+        if scales.contains(.threeX) {
+            let plan3 = Plan(boxWidth: 618, boxHeight: 618, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
+            plans.append(plan3)
+        }
 
         return plans
     }
