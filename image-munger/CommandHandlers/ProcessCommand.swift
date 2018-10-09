@@ -117,6 +117,7 @@ class ProcessCommand: Command {
             if FileManager.default.fileExists(atPath: cfg.srcDirPath, isDirectory: &isDirectory) == true {
                 if isDirectory.boolValue == true {
                     files = try FileManager.default.contentsOfDirectory(atPath: cfg.srcDirPath)
+                    files.sort()
                 } else {
                     files.append(cfg.srcDirPath.lastPathComponent)
                     cfg.srcDirPath = cfg.srcDirPath.deletingLastPathComponent
