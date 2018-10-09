@@ -348,8 +348,8 @@ class ProcessCommand: Command {
         let bytesPerRow = width * 4
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        guard let context = CGContext.init(data: nil, width: Int(dstRect.width), height: Int(dstRect.height), bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
-            print("Can't create CGContext")
+        guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+            print("Can't create CGContext. width: \(width), height: \(height), bytes per row: \(bytesPerRow)")
             return nil
         }
 
