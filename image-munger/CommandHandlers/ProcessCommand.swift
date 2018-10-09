@@ -310,6 +310,8 @@ class ProcessCommand: Command {
             nW = (src.width / src.height * nH).rounded(.down)
         }
 
+        dst.origin.x = ((dst.size.width - nW) / 2.0).rounded(.down)
+        dst.origin.y = ((dst.size.height - nH) / 2.0).rounded(.down)
         dst.size.width = nW
         dst.size.height = nH
 
