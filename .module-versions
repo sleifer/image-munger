@@ -1,5 +1,5 @@
 CommandLineCore, ~> 1.2
-ObjectMapper, ~> 3.3
+ObjectMapper, ~> 3.4
 
 // Submodule name (comma) (space) <test> (space) version
 // Tests:
