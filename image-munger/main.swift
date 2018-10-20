@@ -9,10 +9,10 @@
 import Foundation
 import CommandLineCore
 
-let toolVersion = "0.1.6"
-let core = CommandCore()
+let toolVersion = "0.1.7"
 
 func main() {
+    let core = CommandCore()
     core.set(version: toolVersion)
     core.set(help: "A command-line tool to help automate image processing for projects.")
     core.set(defaultCommand: "process")

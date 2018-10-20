@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CommandLineCore
 
 class Manifest {
     var manifestPath: String
@@ -19,8 +20,8 @@ class Manifest {
     }()
 
     init(path: String, outputDir: String) {
-        self.manifestPath = core.baseSubPath(path)
-        self.outputDir = core.baseSubPath(outputDir)
+        self.manifestPath = CommandCore.core!.baseSubPath(path)
+        self.outputDir = CommandCore.core!.baseSubPath(outputDir)
         settings = [:]
         files = []
     }
