@@ -9,7 +9,7 @@
 import Foundation
 import CommandLineCore
 
-let toolVersion = "0.1.7"
+let toolVersion = "0.1.8"
 
 func main() {
     let core = CommandCore()
