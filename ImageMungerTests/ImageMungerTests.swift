@@ -101,6 +101,7 @@ class ImageMungerTests: XCTestCase {
     }
 
     func testManifest01_smallSticker() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "smallSticker.xcstickers")
         gitCommit("testManifest01_smallSticker prepare")
 
@@ -115,11 +116,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest01_smallSticker finished")
     }
 
     func testManifest02_mediumSticker() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "mediumSticker.xcstickers")
         gitCommit("testManifest02_mediumSticker prepare")
 
@@ -134,11 +136,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest02_mediumSticker finished")
     }
 
     func testManifest03_largeSticker() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "largeSticker.xcstickers")
         gitCommit("testManifest03_largeSticker prepare")
 
@@ -153,11 +156,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest03_largeSticker finished")
     }
 
     func testManifest04_thumb256() throws {
+        let core = CommandCore()
         try prepareDirectory(dstSubPath: "thumb256")
         gitCommit("testManifest04_thumb256 prepare")
 
@@ -172,11 +176,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest04_thumb256 finished")
     }
 
     func testManifest05_iconSet_app() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test.xcassets", dstSubPath: "iconset.xcassets")
         gitCommit("testManifest05_iconSet_app prepare")
 
@@ -191,11 +196,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest05_iconSet_app finished")
     }
 
     func testManifest06_iconSet_messages() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "iconset.xcstickers")
         gitCommit("testManifest06_iconSet_messages prepare")
 
@@ -210,11 +216,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest06_iconSet_messages finished")
     }
 
     func testManifest07_icns() throws {
+        let core = CommandCore()
         let manifestPath = try testFilePath(srcSubPath: "icns-manifest.txt")
         let process = ProcessCommand()
         var cmd = ParsedCommand()
@@ -226,11 +233,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest07_icns finished")
     }
 
     func testManifest08_imageSet() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageset.xcassets")
         gitCommit("testManifest08_imageSet prepare")
 
@@ -245,11 +253,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest08_imageSet finished")
     }
 
     func testManifest09_imageSetForLargeSticker() throws {
+        let core = CommandCore()
         try prepareFiles(srcSubPath: "test2.xcassets", dstSubPath: "imageSetForLargeSticker.xcassets")
         gitCommit("testManifest09_imageSetForLargeSticker prepare")
 
@@ -264,11 +273,12 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest09_imageSetForLargeSticker finished")
     }
 
     func testManifest10_imageFileForLargeSticker() throws {
+        let core = CommandCore()
         try prepareDirectory(dstSubPath: "stickerFiles")
         gitCommit("testManifest10_imageFileForLargeSticker prepare")
 
@@ -283,7 +293,7 @@ class ImageMungerTests: XCTestCase {
         option.arguments.append(ImageMungerTests.deskPath)
         cmd.options.append(option)
 
-        process.run(cmd: cmd)
+        process.run(cmd: cmd, core: core)
         gitCommit("testManifest10_imageFileForLargeSticker finished")
     }
 
