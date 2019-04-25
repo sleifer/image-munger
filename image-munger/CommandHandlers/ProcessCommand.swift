@@ -9,6 +9,26 @@
 import Foundation
 import CommandLineCore
 
+enum ProcessError: Error, LocalizedError {
+    case validate(String)
+    case collectFiles(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .validate(let value):
+            return "validate Error: \(value)"
+        case .collectFiles(let value):
+            return "collectFiles Error: \(value)"
+        }
+    }
+}
+
+enum SourceFileGroup {
+    case general
+    case oval
+    case square
+}
+
 enum ScaleMode {
     case aspectFit
     case fill
@@ -38,13 +58,21 @@ class ProcessCommand: Command {
 
         print("Read \(manifests.count) configuration(s) from \(cmd.parameters.count) manifest file(s).")
 
-        for manifest in manifests {
-            if let error = validate(manifest: manifest) {
-                print("Validate error: \(error)")
-            } else if let error = collectFiles(manifest: manifest) {
-                print("CollectFiles error: \(error)")
-            } else {
-                process(manifest: manifest)
+        for idx in 0..<manifests.count {
+            do {
+                try validate(manifest: manifests[idx])
+                if manifests[idx].configuration.srcDirPath.count > 0 {
+                    try collectFiles(manifest: &manifests[idx], group: .general)
+                }
+                if manifests[idx].configuration.ovalSrcDirPath.count > 0 {
+                    try collectFiles(manifest: &manifests[idx], group: .oval)
+                }
+                if manifests[idx].configuration.squareSrcDirPath.count > 0 {
+                    try collectFiles(manifest: &manifests[idx], group: .square)
+                }
+                process(manifest: manifests[idx])
+            } catch {
+                print(error.localizedDescription)
             }
         }
 
@@ -107,71 +135,79 @@ class ProcessCommand: Command {
         return manifests
     }
 
-    func collectFiles(manifest: Manifest) -> String? {
-        let cfg = manifest.configuration
+    func collectFiles(manifest: inout Manifest, group: SourceFileGroup) throws {
+        let pathKey: WritableKeyPath<Configuation, String>
+        let filesKey: WritableKeyPath<Manifest, [String]>
 
-        do {
-            var files: [String] = []
-
-            var isDirectory = ObjCBool(false)
-            if FileManager.default.fileExists(atPath: cfg.srcDirPath, isDirectory: &isDirectory) == true {
-                if isDirectory.boolValue == true {
-                    files = try FileManager.default.contentsOfDirectory(atPath: cfg.srcDirPath)
-                    files.sort()
-                } else {
-                    files.append(cfg.srcDirPath.lastPathComponent)
-                    cfg.srcDirPath = cfg.srcDirPath.deletingLastPathComponent
-                }
-                files = cfg.filterByExtension(files: files)
-
-                if manifest.files.count == 0 {
-                    manifest.files.append(contentsOf: files)
-                    return nil
-                }
-
-                let filtered = manifest.files.filter { (item: String) -> Bool in
-                    if files.contains(item) {
-                        return true
-                    }
-                    return false
-                }
-
-                if filtered.count != manifest.files.count {
-                    return "Src is missing files listed in manifest."
-                }
-            } else {
-                return "Src does not exist. [\(cfg.srcDirPath)]"
-            }
-        } catch {
-            return error.localizedDescription
+        switch group {
+        case .general:
+            pathKey = \Configuation.srcDirPath
+            filesKey = \Manifest.files
+        case .oval:
+            pathKey = \Configuation.ovalSrcDirPath
+            filesKey = \Manifest.ovalFiles
+        case .square:
+            pathKey = \Configuation.squareSrcDirPath
+            filesKey = \Manifest.squareFiles
         }
 
-        return nil
+        var cfg = manifest.configuration
+
+        var files: [String] = []
+
+        var isDirectory = ObjCBool(false)
+        if FileManager.default.fileExists(atPath: cfg[keyPath: pathKey], isDirectory: &isDirectory) == true {
+            if isDirectory.boolValue == true {
+                files = try FileManager.default.contentsOfDirectory(atPath: cfg[keyPath: pathKey])
+                files.sort()
+            } else {
+                files.append(cfg[keyPath: pathKey].lastPathComponent)
+                cfg[keyPath: pathKey] = cfg[keyPath: pathKey].deletingLastPathComponent
+            }
+            files = cfg.filterByExtension(files: files)
+
+            if manifest[keyPath: filesKey].count == 0 {
+                manifest[keyPath: filesKey].append(contentsOf: files)
+                return
+            }
+
+            let filtered = manifest[keyPath: filesKey].filter { (item: String) -> Bool in
+                if files.contains(item) {
+                    return true
+                }
+                return false
+            }
+
+            if filtered.count != manifest[keyPath: filesKey].count {
+                throw ProcessError.collectFiles("Src is missing files listed in manifest.")
+            }
+        } else {
+            throw ProcessError.collectFiles("Src does not exist. [\(cfg[keyPath: pathKey])]")
+        }
     }
 
-    func validate(manifest: Manifest) -> String? {
+    func validate(manifest: Manifest) throws {
         let cfg = manifest.configuration
 
-        if cfg.srcDirPath == "" {
+        if cfg.srcDirPath == "" && (cfg.ovalSrcDirPath == "" || cfg.squareSrcDirPath == "") {
             cfg.valid = false
             cfg.error = "Missing src."
-            return cfg.error
+            throw ProcessError.validate(cfg.error ?? "")
         }
 
         if cfg.dstDirPath == "" {
             cfg.valid = false
             cfg.error = "Missing dst."
-            return cfg.error
+            throw ProcessError.validate(cfg.error ?? "")
         }
 
         if cfg.scale != 0 {
             if cfg.maxWidth != 0 || cfg.maxHeight != 0 {
                 cfg.valid = false
                 cfg.error = "Can not specify scale and max-width / max-height."
-                return cfg.error
+                throw ProcessError.validate(cfg.error ?? "")
             }
         }
-        return nil
     }
 
     func clearStickerPack(folder: String) {
@@ -252,17 +288,22 @@ class ProcessCommand: Command {
                 print("\(cfg.dstDirPath) is not a .appiconset or .stickersiconset directory.")
                 return
             }
-            if manifest.files.count != 1 {
-                print("Only 1 source image allowed when using iconset package.")
+            if manifest.files.count != 1 && manifest.ovalFiles.count == 0 && manifest.squareFiles.count == 0 {
+                print("Only 1 source image allowed when using iconset package. Found \(manifest.files.count).")
                 return
             }
+            if manifest.files.count == 0 && (manifest.ovalFiles.count != 1 || manifest.squareFiles.count != 1) {
+                print("Only 1 source image allowed when using iconset package. Found \(manifest.ovalFiles.count)/\(manifest.squareFiles.count).")
+                return
+            }
+
         case .icns:
             if cfg.dstDirPath.hasSuffix(".icns") == false {
                 print("\(cfg.dstDirPath) is not a .icns file.")
                 return
             }
             if manifest.files.count != 1 {
-                print("Only 1 source image allowed when using icns package.")
+                print("Only 1 source image allowed when using icns package. Found \(manifest.files.count).")
                 return
             }
         case .catalog:
@@ -279,14 +320,27 @@ class ProcessCommand: Command {
 
         var outManifest: [String] = []
 
-        for file in manifest.files {
-            let path = cfg.srcDirPath.appendingPathComponent(file)
-            processImage(srcImagePath: path, manifest: manifest)
+        if manifest.ovalFiles.count == manifest.squareFiles.count && manifest.ovalFiles.count != 0 {
+            for idx in 0..<manifest.ovalFiles.count {
+                let ovalPath = cfg.ovalSrcDirPath.appendingPathComponent(manifest.ovalFiles[idx])
+                let squarePath = cfg.squareSrcDirPath.appendingPathComponent(manifest.squareFiles[idx])
+                processImage(srcImagePath: squarePath, ovalSrcImagePath: ovalPath, manifest: manifest)
 
-            var name = path.lastPathComponent.changeFileExtension(to: "")
-            name = name.changeFileSuffix(from: "@2x", to: "")
-            name = name.changeFileSuffix(from: "@3x", to: "")
-            outManifest.append(name)
+                var name = squarePath.lastPathComponent.changeFileExtension(to: "")
+                name = name.changeFileSuffix(from: "@2x", to: "")
+                name = name.changeFileSuffix(from: "@3x", to: "")
+                outManifest.append(name)
+            }
+        } else {
+            for file in manifest.files {
+                let path = cfg.srcDirPath.appendingPathComponent(file)
+                processImage(srcImagePath: path, manifest: manifest)
+
+                var name = path.lastPathComponent.changeFileExtension(to: "")
+                name = name.changeFileSuffix(from: "@2x", to: "")
+                name = name.changeFileSuffix(from: "@3x", to: "")
+                outManifest.append(name)
+            }
         }
 
         if let path = cfg.outManifestPath {
@@ -526,7 +580,7 @@ class ProcessCommand: Command {
 
     // swiftlint:disable cyclomatic_complexity
 
-    func processIconSet(srcImagePath: String, manifest: Manifest, plan: Plan) {
+    func processIconSet(srcImagePath: String, ovalSrcImagePath: String?, manifest: Manifest, plan: Plan) {
         let dstFolderPath = manifest.configuration.dstDirPath
 
         let contentsPath = dstFolderPath.appendingPathComponent("Contents.json")
@@ -573,14 +627,19 @@ class ProcessCommand: Command {
                     }
                 }
 
-                if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
-                    print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
+                var theSrcImagePath = srcImagePath
+                if let ovalSrcImagePath = ovalSrcImagePath, reqWidth != reqHeight {
+                    theSrcImagePath = ovalSrcImagePath
+                }
+
+                if let reqSuffix = plan.requiredSuffix, theSrcImagePath.hasFileSuffix(reqSuffix) == false {
+                    print("\(theSrcImagePath) does not have the required suffix: \(reqSuffix)")
                     continue
                 }
 
-                var dstName = srcImagePath.lastPathComponent
+                var dstName = theSrcImagePath.lastPathComponent
                 if ImageFormat.formatForPath(dstName) == .unchanged {
-                    print("\(srcImagePath) has an unsupported source format.")
+                    print("\(theSrcImagePath) has an unsupported source format.")
                     continue
                 }
                 if plan.outputFormat != .unchanged {
@@ -592,7 +651,7 @@ class ProcessCommand: Command {
 
                 let dstPath = dstFolderPath.appendingPathComponent(dstName)
 
-                let srcImageUrl = URL(fileURLWithPath: srcImagePath)
+                let srcImageUrl = URL(fileURLWithPath: theSrcImagePath)
                 let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
                 var srcImage: CGImage?
                 if let srcImageSource = srcImageSource {
@@ -600,7 +659,7 @@ class ProcessCommand: Command {
                 }
 
                 if srcImage == nil {
-                    print("Failed to load image \(srcImagePath).")
+                    print("Failed to load image \(theSrcImagePath).")
                     continue
                 }
 
@@ -714,7 +773,7 @@ class ProcessCommand: Command {
 
     // swiftlint:disable cyclomatic_complexity
 
-    func processImage(srcImagePath: String, manifest: Manifest) {
+    func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil, manifest: Manifest) {
         print("Processing: \(srcImagePath.lastPathComponent)")
 
         var oneTimeDone: Bool = false
@@ -729,7 +788,7 @@ class ProcessCommand: Command {
             case .imageSet:
                 break
             case .iconSet:
-                processIconSet(srcImagePath: srcImagePath, manifest: manifest, plan: plan)
+                processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, manifest: manifest, plan: plan)
                 continue
             case .icns:
                 processIcns(srcImagePath: srcImagePath, manifest: manifest, plan: plan)

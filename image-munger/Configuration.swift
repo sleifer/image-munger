@@ -98,6 +98,8 @@ class Configuation {
     var valid: Bool
     var error: String?
     var srcDirPath: String
+    var ovalSrcDirPath: String
+    var squareSrcDirPath: String
     var dstDirPath: String
     var manifestPath: String
     var preset: PresetType
@@ -117,6 +119,8 @@ class Configuation {
     init() {
         valid = false
         srcDirPath = ""
+        ovalSrcDirPath = ""
+        squareSrcDirPath = ""
         dstDirPath = ""
         manifestPath = ""
         preset = .none

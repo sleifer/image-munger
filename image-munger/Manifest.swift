@@ -14,6 +14,8 @@ class Manifest {
     var outputDir: String
     var settings: [String: String]
     var files: [String]
+    var ovalFiles: [String]
+    var squareFiles: [String]
 
     lazy var configuration: Configuation = {
         return makeConfiguration()
@@ -24,6 +26,8 @@ class Manifest {
         self.outputDir = CommandCore.core!.baseSubPath(outputDir)
         settings = [:]
         files = []
+        ovalFiles = []
+        squareFiles = []
     }
 
     func expandPathSetting(_ path: String) -> String {
@@ -44,6 +48,10 @@ class Manifest {
             switch key {
             case "src":
                 config.srcDirPath = expandPathSetting(value)
+            case "src-oval":
+                config.ovalSrcDirPath = expandPathSetting(value)
+            case "src-square":
+                config.squareSrcDirPath = expandPathSetting(value)
             case "dst":
                 config.dstDirPath = expandPathSetting(value)
             case "preset":
