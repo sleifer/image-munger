@@ -285,8 +285,8 @@ class Configuation {
         var plans: [Plan] = []
 
         if scales.contains(.oneX) {
-            let plan3 = Plan(boxWidth: 206, boxHeight: 206, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@1x")
-            plans.append(plan3)
+            let plan1 = Plan(boxWidth: 206, boxHeight: 206, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@1x")
+            plans.append(plan1)
         }
 
         if scales.contains(.twoX) {
