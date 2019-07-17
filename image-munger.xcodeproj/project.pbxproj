@@ -42,6 +42,7 @@
 		DB1BCF8721396CDB006F3D04 /* ImageMungerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMungerTests.swift; sourceTree = "<group>"; };
 		DB1BCF8921396CDB006F3D04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB1BCFDF21397C68006F3D04 /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
+		DB6756EC22DF5BB2004C8F0D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DBB2006121389DC500519BC3 /* testing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = testing; sourceTree = "<group>"; };
 		DBB9B43A2142A3CC00078E5A /* libObjectMapper.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libObjectMapper.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
@@ -89,6 +90,7 @@
 		DBE2DA142130CA160056C931 = {
 			isa = PBXGroup;
 			children = (
+				DB6756EC22DF5BB2004C8F0D /* README.md */,
 				DBE2DA2D2130CD060056C931 /* .module-versions */,
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
 				DBB2006121389DC500519BC3 /* testing */,
