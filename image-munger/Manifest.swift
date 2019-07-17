@@ -59,7 +59,9 @@ class Manifest {
                     config.preset = theValue
                 }
             case "valid-format":
-                break
+                config.validExtensions = value.components(separatedBy: ",").map { (item) -> String in
+                    return item.trimmed()
+                }
             case "out-manifest":
                 config.outManifestPath = expandPathSetting(value)
             case "out-format":
