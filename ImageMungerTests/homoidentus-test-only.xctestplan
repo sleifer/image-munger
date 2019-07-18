@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "environmentVariableEntries" : [
+      {
+        "key" : "PROJECT_DIR",
+        "value" : "$PROJECT_DIR"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "selectedTests" : [
+        "ImageMungerTests\/testManifest11_homoidentus()"
+      ],
+      "target" : {
+        "containerPath" : "container:image-munger.xcodeproj",
+        "identifier" : "DB1BCF8421396CDB006F3D04",
+        "name" : "ImageMungerTests"
+      }
+    }
+  ],
+  "version" : 1
+}
