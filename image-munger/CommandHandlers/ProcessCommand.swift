@@ -35,6 +35,13 @@ enum ScaleMode {
 }
 
 class ProcessCommand: Command {
+    var manifest: Manifest = Manifest()
+    var catalogFolderSegmentMaxSize: Int = 0
+    var catalogFolderSegmentIndex: Int = 0
+    var catalogFolderSegmentAccumulatedSize: Int = 0
+    var catalogFolderSegmentBasePath: String = ""
+    var catalogFolderSegmentPath: String = ""
+
     required init() {
     }
 
@@ -70,7 +77,8 @@ class ProcessCommand: Command {
                 if manifests[idx].configuration.squareSrcDirPath.count > 0 {
                     try collectFiles(manifest: &manifests[idx], group: .square)
                 }
-                process(manifest: manifests[idx])
+                self.manifest = manifests[idx]
+                process()
             } catch {
                 print(error.localizedDescription)
             }
@@ -229,13 +237,35 @@ class ProcessCommand: Command {
         }
     }
 
-    func clearCatalog(folder: String) {
+    func clearSplitCatalogs(folder: String) {
+        var idx: Int = 0
+        while true {
+            let path = "\(folder)_\(idx)"
+            if FileManager.default.fileExists(atPath: path) == true {
+                try? FileManager.default.removeItem(atPath: path)
+                idx += 1
+            } else {
+                return
+            }
+        }
+    }
+
+    func clearCatalog(folder: String, isFolder: Bool = false) {
         clear(folder: folder)
 
         do {
             let contents = CatalogContents()
             contents.info.author = "xcode"
             contents.info.version = 1
+            contents.isFolder = isFolder
+            contents.properties.providesNamespace = manifest.configuration.catalogFolderNamespace
+            if let tag = manifest.configuration.catalogFolderTag {
+                if catalogFolderSegmentMaxSize != 0 {
+                    contents.properties.onDemandResourceTags.append("\(tag)_\(catalogFolderSegmentIndex)")
+                } else {
+                    contents.properties.onDemandResourceTags.append(tag)
+                }
+            }
             let path = folder.appendingPathComponent("Contents.json")
             let JSONString = contents.toJSONString(prettyPrint: true)
             try JSONString?.write(toFile: path, atomically: true, encoding: .utf8)
@@ -260,11 +290,30 @@ class ProcessCommand: Command {
         }
     }
 
+    func setupCatalogFolderSegment() {
+        catalogFolderSegmentPath = "\(catalogFolderSegmentBasePath)_\(catalogFolderSegmentIndex)"
+        try? FileManager.default.createDirectory(atPath: catalogFolderSegmentPath, withIntermediateDirectories: true, attributes: nil)
+        clearCatalog(folder: catalogFolderSegmentPath, isFolder: true)
+    }
+
+    func advanceSegmentIfNeeded() {
+        if manifest.configuration.catalogFolderMaxSize != 0 {
+            if catalogFolderSegmentAccumulatedSize > catalogFolderSegmentMaxSize {
+                catalogFolderSegmentIndex += 1
+                catalogFolderSegmentAccumulatedSize = 0
+                setupCatalogFolderSegment()
+            }
+        }
+    }
+
     // swiftlint:disable cyclomatic_complexity
 
-    func process(manifest: Manifest) {
+    func process() {
         let cfg = manifest.configuration
         let package = cfg.outputPackage
+
+        catalogFolderSegmentMaxSize = 0
+        catalogFolderSegmentPath = cfg.dstDirPath
 
         switch package {
         case .none:
@@ -311,8 +360,35 @@ class ProcessCommand: Command {
                 print("\(cfg.dstDirPath) is not a .xcassets directory.")
                 return
             }
+            try? FileManager.default.createDirectory(atPath: cfg.dstDirPath, withIntermediateDirectories: true, attributes: nil)
             if cfg.outPackageReplace == true {
                 clearCatalog(folder: cfg.dstDirPath)
+            }
+        case .catalogFolder:
+            let assetParts = cfg.dstDirPath.components(separatedBy: "/").filter { (component) -> Bool in
+                if component.hasSuffix(".xcassets") == true {
+                    return true
+                }
+                return false
+            }
+            if assetParts.count == 0 {
+                print("\(cfg.dstDirPath) is not in a .xcassets directory.")
+                return
+            }
+            if cfg.catalogFolderMaxSize != 0 {
+                catalogFolderSegmentIndex = 0
+                catalogFolderSegmentMaxSize = cfg.catalogFolderMaxSize
+                catalogFolderSegmentAccumulatedSize = 0
+                catalogFolderSegmentBasePath = cfg.dstDirPath
+                if cfg.outPackageReplace == true {
+                    clearSplitCatalogs(folder: catalogFolderSegmentBasePath)
+                }
+                setupCatalogFolderSegment()
+            } else {
+                try? FileManager.default.createDirectory(atPath: cfg.dstDirPath, withIntermediateDirectories: true, attributes: nil)
+                if cfg.outPackageReplace == true {
+                    clearCatalog(folder: cfg.dstDirPath, isFolder: true)
+                }
             }
         }
 
@@ -324,7 +400,8 @@ class ProcessCommand: Command {
             for idx in 0..<manifest.ovalFiles.count {
                 let ovalPath = cfg.ovalSrcDirPath.appendingPathComponent(manifest.ovalFiles[idx])
                 let squarePath = cfg.squareSrcDirPath.appendingPathComponent(manifest.squareFiles[idx])
-                processImage(srcImagePath: squarePath, ovalSrcImagePath: ovalPath, manifest: manifest)
+                advanceSegmentIfNeeded()
+                processImage(srcImagePath: squarePath, ovalSrcImagePath: ovalPath)
 
                 var name = squarePath.lastPathComponent.changeFileExtension(to: "")
                 name = name.changeFileSuffix(from: "@2x", to: "")
@@ -334,7 +411,8 @@ class ProcessCommand: Command {
         } else {
             for file in manifest.files {
                 let path = cfg.srcDirPath.appendingPathComponent(file)
-                processImage(srcImagePath: path, manifest: manifest)
+                advanceSegmentIfNeeded()
+                processImage(srcImagePath: path)
 
                 var name = path.lastPathComponent.changeFileExtension(to: "")
                 name = name.changeFileSuffix(from: "@2x", to: "")
@@ -354,6 +432,21 @@ class ProcessCommand: Command {
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    func aspectFit(src: CGSize, dst: inout CGSize) -> CGSize {
+        var nW = dst.width
+        var nH = (src.height / src.width * nW).rounded(.down)
+
+        if nH > dst.height {
+            nH = dst.height
+            nW = (src.width / src.height * nH).rounded(.down)
+        }
+
+        dst.width = nW
+        dst.height = nH
+
+        return dst
+    }
 
     func aspectFit(src: CGRect, dst: inout CGRect) -> CGRect {
         var nW = dst.width
@@ -394,6 +487,7 @@ class ProcessCommand: Command {
     func scale(image: CGImage, width: Int, height: Int, mode: ScaleMode = .aspectFit) -> CGImage? {
         var srcRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
         var dstRect = CGRect(x: 0, y: 0, width: width, height: height)
+        let fullRect = dstRect
 
         switch mode {
         case .aspectFit:
@@ -410,7 +504,11 @@ class ProcessCommand: Command {
             return nil
         }
 
-        context.clear(dstRect)
+        context.clear(fullRect)
+        if let color = manifest.configuration.backgroundColor {
+            context.setFillColor(color.cgColor)
+            context.fill(fullRect)
+        }
         context.draw(image, in: srcRect)
         return context.makeImage()
     }
@@ -580,8 +678,8 @@ class ProcessCommand: Command {
 
     // swiftlint:disable cyclomatic_complexity
 
-    func processIconSet(srcImagePath: String, ovalSrcImagePath: String?, manifest: Manifest, plan: Plan) {
-        let dstFolderPath = manifest.configuration.dstDirPath
+    func processIconSet(srcImagePath: String, ovalSrcImagePath: String?, plan: Plan) {
+        let dstFolderPath = catalogFolderSegmentPath
 
         let contentsPath = dstFolderPath.appendingPathComponent("Contents.json")
         var contents: ImageSetContents?
@@ -689,8 +787,8 @@ class ProcessCommand: Command {
 
     // swiftlint:enable cyclomatic_complexity
 
-    func processIcns(srcImagePath: String, manifest: Manifest, plan: Plan) {
-        let dstFilePath = manifest.configuration.dstDirPath
+    func processIcns(srcImagePath: String, plan: Plan) {
+        let dstFilePath = catalogFolderSegmentPath
         let dstFolderPath = dstFilePath.changeFileExtension(to: "iconset")
 
         do {
@@ -773,10 +871,11 @@ class ProcessCommand: Command {
 
     // swiftlint:disable cyclomatic_complexity
 
-    func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil, manifest: Manifest) {
+    func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil) {
         print("Processing: \(srcImagePath.lastPathComponent)")
 
         var oneTimeDone: Bool = false
+        var maxFileSize: Int = 0
 
         for plan in manifest.configuration.plans {
 
@@ -788,12 +887,14 @@ class ProcessCommand: Command {
             case .imageSet:
                 break
             case .iconSet:
-                processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, manifest: manifest, plan: plan)
+                processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
                 continue
             case .icns:
-                processIcns(srcImagePath: srcImagePath, manifest: manifest, plan: plan)
+                processIcns(srcImagePath: srcImagePath, plan: plan)
                 continue
             case .catalog:
+                break
+            case .catalogFolder:
                 break
             }
 
@@ -812,7 +913,7 @@ class ProcessCommand: Command {
                 dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
             }
 
-            var dstPath = manifest.configuration.dstDirPath.appendingPathComponent(dstName)
+            var dstPath = catalogFolderSegmentPath.appendingPathComponent(dstName)
 
             if plan.removeSuffix != nil || plan.addSuffix != nil {
                 dstPath = dstPath.changeFileSuffix(from: plan.removeSuffix ?? "", to: plan.addSuffix ?? "")
@@ -840,17 +941,27 @@ class ProcessCommand: Command {
                         newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
                         newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
                     }
-                } else if plan.boxWidth == 0 && plan.boxHeight == 0 {
-                    // no action
-                } else if plan.boxWidth == 0 {
-                    newWidth = plan.boxHeight
-                    newHeight = plan.boxHeight
-                } else if plan.boxHeight == 0 {
-                     newWidth = plan.boxWidth
-                     newHeight = plan.boxWidth
                 } else {
-                    newWidth = plan.boxWidth
-                    newHeight = plan.boxHeight
+                    if plan.boxWidth == 0 && plan.boxHeight == 0 {
+                        // no action
+                    } else {
+                        if plan.boxWidth == 0 {
+                            newWidth = plan.boxHeight
+                            newHeight = plan.boxHeight
+                        } else if plan.boxHeight == 0 {
+                            newWidth = plan.boxWidth
+                            newHeight = plan.boxWidth
+                        } else {
+                            newWidth = plan.boxWidth
+                            newHeight = plan.boxHeight
+                        }
+                        if plan.aspectWithMaxBox == true {
+                            var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
+                            let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
+                            newWidth = Int(fit.width)
+                            newHeight = Int(fit.height)
+                        }
+                    }
                 }
                 if newWidth != 0 && newHeight != 0 {
                     dstImage = scale(image: srcImage, width: newWidth, height: newHeight)
@@ -862,7 +973,7 @@ class ProcessCommand: Command {
                 break
             case .stickerPack:
                 dstPath = insertStickerToPack(dstPath)
-            case .imageSet, .catalog:
+            case .imageSet, .catalog, .catalogFolder:
                 if oneTimeDone == false {
                     clearImageSet(dstPath)
                     oneTimeDone = true
@@ -879,8 +990,30 @@ class ProcessCommand: Command {
             } else if let image = srcImage {
                 write(image: image, path: dstPath)
             }
+
+            let fileSize = getSize(of: URL(fileURLWithPath: dstPath))
+            if fileSize > maxFileSize {
+                maxFileSize = fileSize
+            }
         }
+
+        catalogFolderSegmentAccumulatedSize += maxFileSize
     }
 
     // swiftlint:enable cyclomatic_complexity
+
+    func getSize(of url: URL) -> Int {
+        var fileSize: Int = 0
+
+        let keys: Set<URLResourceKey> = [URLResourceKey.fileSizeKey]
+        do {
+            let resourceValues = try url.resourceValues(forKeys: keys)
+            if let value = resourceValues.fileSize {
+                fileSize += value
+            }
+        } catch {
+            print("\(error)")
+        }
+        return fileSize
+    }
 }

@@ -119,6 +119,8 @@ class StickerContentsProperties: Mappable {
 
 class CatalogContents: Mappable {
     var info: CatalogContentsInfo = CatalogContentsInfo()
+    var properties: CatalogContentsProperties = CatalogContentsProperties()
+    var isFolder: Bool = false
 
     init() {
     }
@@ -128,6 +130,9 @@ class CatalogContents: Mappable {
 
     func mapping(map: Map) {
         info <- map["info"]
+        if isFolder == true {
+            properties <- map["properties"]
+        }
     }
 }
 
@@ -144,6 +149,24 @@ class CatalogContentsInfo: Mappable {
     func mapping(map: Map) {
         version <- map["version"]
         author <- map["author"]
+    }
+}
+
+class CatalogContentsProperties: Mappable {
+    var providesNamespace: Bool = false
+    var onDemandResourceTags: [String] = []
+
+    init() {
+    }
+
+    required init?(map: Map) {
+    }
+
+    func mapping(map: Map) {
+        providesNamespace <- map["provides-namespace"]
+        if onDemandResourceTags.count > 0 {
+            onDemandResourceTags <- map["on-demand-resource-tags"]
+        }
     }
 }
 

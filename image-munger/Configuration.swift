@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AppKit
 
 enum ImageScales {
     case oneX
@@ -92,6 +93,7 @@ enum PackageType: String {
     case iconSet = "iconset"
     case icns = "icns"
     case catalog = "catalog"
+    case catalogFolder = "catalogfolder"
 }
 
 class Configuation {
@@ -108,9 +110,13 @@ class Configuation {
     var outputFormat: ImageFormat
     var outputPackage: PackageType
     var outPackageReplace: Bool
+    var catalogFolderNamespace: Bool
+    var catalogFolderTag: String?
+    var catalogFolderMaxSize: Int
     var scale: Double
     var maxWidth: Int
     var maxHeight: Int
+    var backgroundColor: NSColor?
 
     lazy var plans: [Plan] = {
         return makePlans()
@@ -118,6 +124,7 @@ class Configuation {
 
     init() {
         valid = false
+        error = nil
         srcDirPath = ""
         ovalSrcDirPath = ""
         squareSrcDirPath = ""
@@ -125,12 +132,17 @@ class Configuation {
         manifestPath = ""
         preset = .none
         validExtensions = ["jpg", "png", "gif", "tif"]
+        outManifestPath = nil
         outputFormat = .unchanged
         outputPackage = .none
         outPackageReplace = false
+        catalogFolderNamespace = false
+        catalogFolderTag = nil
+        catalogFolderMaxSize = 0
         scale = 0.0
         maxWidth = 0
         maxHeight = 0
+        backgroundColor = nil
     }
 
     func filterByExtension(files: [String]) -> [String] {
@@ -203,7 +215,7 @@ class Configuation {
     func makeSmallStickerPlans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan = Plan(boxWidth: 300, boxHeight: 300, outputFormat: .PNG, outputPackage: self.outputPackage)
+        let plan = Plan(boxWidth: 300, boxHeight: 300, aspectWithMaxBox: true, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
         plans.append(plan)
 
         return plans
@@ -212,7 +224,7 @@ class Configuation {
     func makeMediumStickerPlans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan = Plan(boxWidth: 408, boxHeight: 408, outputFormat: .PNG, outputPackage: self.outputPackage)
+        let plan = Plan(boxWidth: 408, boxHeight: 408, aspectWithMaxBox: true, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
         plans.append(plan)
 
         return plans
@@ -221,7 +233,7 @@ class Configuation {
     func makeLargeStickerPlans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan = Plan(boxWidth: 618, boxHeight: 618, outputFormat: .PNG, outputPackage: self.outputPackage)
+        let plan = Plan(boxWidth: 618, boxHeight: 618, aspectWithMaxBox: true, outputFormat: .PNG, outputPackage: self.outputPackage, addSuffix: "@3x")
         plans.append(plan)
 
         return plans
@@ -230,7 +242,7 @@ class Configuation {
     func makeThumb256Plans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan = Plan(boxWidth: 256, boxHeight: 256, outputFormat: self.outputFormat, outputPackage: self.outputPackage)
+        let plan = Plan(boxWidth: 256, boxHeight: 256, aspectWithMaxBox: true, outputFormat: self.outputFormat, outputPackage: self.outputPackage)
         plans.append(plan)
 
         return plans
@@ -239,14 +251,25 @@ class Configuation {
     func makeImageSetPlans() -> [Plan] {
         var plans: [Plan] = []
 
-        let plan1 = Plan(scale: 1.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "")
-        plans.append(plan1)
+        if self.maxWidth != 0 && self.maxHeight != 0 {
+            let plan1 = Plan(boxWidth: self.maxWidth / 3, boxHeight: self.maxHeight / 3, aspectWithMaxBox: true, outputFormat: self.outputFormat, outputPackage: self.outputPackage)
+            plans.append(plan1)
 
-        let plan2 = Plan(scale: 2.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "@2x")
-        plans.append(plan2)
+            let plan2 = Plan(boxWidth: self.maxWidth / 3 * 2, boxHeight: self.maxHeight / 3 * 2, aspectWithMaxBox: true, outputFormat: self.outputFormat, outputPackage: self.outputPackage, addSuffix: "@2x")
+            plans.append(plan2)
 
-        let plan3 = Plan(scale: 1.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x")
-        plans.append(plan3)
+            let plan3 = Plan(boxWidth: self.maxWidth, boxHeight: self.maxHeight, aspectWithMaxBox: true, outputFormat: self.outputFormat, outputPackage: self.outputPackage, addSuffix: "@3x")
+            plans.append(plan3)
+        } else {
+            let plan1 = Plan(scale: 1.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "")
+            plans.append(plan1)
+
+            let plan2 = Plan(scale: 2.0/3.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x", removeSuffix: "@3x", addSuffix: "@2x")
+            plans.append(plan2)
+
+            let plan3 = Plan(scale: 1.0, outputFormat: self.outputFormat, outputPackage: self.outputPackage, requiredSuffix: "@3x")
+            plans.append(plan3)
+        }
 
         return plans
     }

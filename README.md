@@ -16,8 +16,8 @@ They contain:
 Paths in the manifest file can be:
 
 - absolute
-- relative to imp execution directory
-- relative to output directory if they start with "~~~/"
+- relative to current working directory
+- relative to output directory if they start with "~~~/"; default output directory is current working directory
 - relative to directory containing manifest file if they start with "~~/"
 
 Manifests can contain the following keys:
@@ -36,6 +36,8 @@ Manifests can contain the following keys:
 - max-px: square box size to fix image in
 - max-width-px: width of box to fit image in
 - max-height-px: height of box to fit image in
+- catalog-folder-namespace: (true | false) when using catalogfolder package format, whether to mark as creating a namespace
+- catalog-folder-tag: when using catalogfolder package format, tag to assign
 
 ### Defined Presets
 
@@ -64,10 +66,10 @@ Manifests can contain the following keys:
 ### Image Formats
 
 - unchanged
-- JPEG
-- PNG
-- GIF
-- TIFF
+- jpg
+- png
+- gif
+- tif
 
 ### Package Types
 
@@ -77,6 +79,7 @@ Manifests can contain the following keys:
 - iconset
 - icns
 - catalog
+- catalogfolder
 
 Publishing in 2021 so I can share a few tools.
 

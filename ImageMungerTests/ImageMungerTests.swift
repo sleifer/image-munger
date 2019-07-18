@@ -297,6 +297,27 @@ class ImageMungerTests: XCTestCase {
         gitCommit("testManifest10_imageFileForLargeSticker finished")
     }
 
+    func testManifest11_homoidentus() throws {
+        let core = CommandCore()
+        try prepareFiles(srcSubPath: "test.xcassets", dstSubPath: "homoidentus.xcassets")
+        try prepareDirectory(dstSubPath: "sticker_media")
+        gitCommit("testManifest11_homoidentus prepare")
+
+        let manifestPath = try testFilePath(srcSubPath: "homoidentus-manifest.txt")
+        let process = ProcessCommand()
+        var cmd = ParsedCommand()
+        cmd.toolName = "imp"
+        cmd.subcommand = "process"
+        cmd.parameters.append(manifestPath)
+        var option = ParsedOption()
+        option.longOption = "--output"
+        option.arguments.append(ImageMungerTests.deskPath)
+        cmd.options.append(option)
+
+        process.run(cmd: cmd, core: core)
+        gitCommit("testManifest11_homoidentus finished")
+    }
+
     func testClearStickerPack() throws {
         let cleanPath = try prepareFiles(srcSubPath: "test.xcstickers", dstSubPath: "clearSticker.xcstickers")
         let process = ProcessCommand()
