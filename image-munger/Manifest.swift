@@ -91,6 +91,12 @@ class Manifest {
                 if let theValue = PackageType(rawValue: value) {
                     config.outputPackage = theValue
                 }
+            case "masks-too":
+                if value.lowercased() == "true" || Int(value) != 0 {
+                    config.masksToo = true
+                } else {
+                    config.masksToo = false
+                }
             case "out-package-replace":
                 if value.lowercased() == "true" || Int(value) != 0 {
                     config.outPackageReplace = true

@@ -23,6 +23,11 @@ enum ProcessError: Error, LocalizedError {
     }
 }
 
+enum ProcessMode {
+    case normal
+    case mask
+}
+
 enum SourceFileGroup {
     case general
     case oval
@@ -484,33 +489,50 @@ class ProcessCommand: Command {
         return newSrc
     }
 
-    func scale(image: CGImage, width: Int, height: Int, mode: ScaleMode = .aspectFit) -> CGImage? {
+    func scale(image: CGImage, width: Int, height: Int, scaleMode: ScaleMode = .aspectFit, processMode: ProcessMode = .normal) -> CGImage? {
         var srcRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
         var dstRect = CGRect(x: 0, y: 0, width: width, height: height)
         let fullRect = dstRect
 
-        switch mode {
+        switch scaleMode {
         case .aspectFit:
             srcRect = aspectFit(src: srcRect, dst: &dstRect)
         case .fill:
             srcRect = fill(src: srcRect, dst: dstRect)
         }
 
-        let bytesPerRow = width * 4
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
-            print("Can't create CGContext. width: \(width), height: \(height), bytes per row: \(bytesPerRow)")
-            return nil
-        }
+        switch processMode {
+        case .normal:
+            let bytesPerRow = width * 4
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+            guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+                print("Can't create CGContext. width: \(width), height: \(height), bytes per row: \(bytesPerRow)")
+                return nil
+            }
 
-        context.clear(fullRect)
-        if let color = manifest.configuration.backgroundColor {
-            context.setFillColor(color.cgColor)
+            context.clear(fullRect)
+            if let color = manifest.configuration.backgroundColor {
+                context.setFillColor(color.cgColor)
+                context.fill(fullRect)
+            }
+            context.draw(image, in: srcRect)
+            return context.makeImage()
+        case .mask:
+            let colorSpace = CGColorSpaceCreateDeviceGray()
+            let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
+            guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+                print("Can't create CGContext. width: \(width), height: \(height)")
+                return nil
+            }
+
+            context.clear(fullRect)
+            context.setFillColor(gray: 1, alpha: 1)
             context.fill(fullRect)
+            context.setBlendMode(.destinationOut)
+            context.draw(image, in: srcRect)
+            return context.makeImage()
         }
-        context.draw(image, in: srcRect)
-        return context.makeImage()
     }
 
     func setStickerPackSize(_ path: String, size: String) {
@@ -764,7 +786,7 @@ class ProcessCommand: Command {
                 var dstImage: CGImage?
 
                 if let srcImage = srcImage {
-                    dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, mode: .fill)
+                    dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, scaleMode: .fill)
                 }
 
                 if let image = dstImage {
@@ -850,7 +872,7 @@ class ProcessCommand: Command {
             var dstImage: CGImage?
 
             if let srcImage = srcImage {
-                dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, mode: .fill)
+                dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, scaleMode: .fill)
             }
 
             if let image = dstImage {
@@ -874,130 +896,142 @@ class ProcessCommand: Command {
     func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil) {
         print("Processing: \(srcImagePath.lastPathComponent)")
 
-        var oneTimeDone: Bool = false
-        var maxFileSize: Int = 0
-
-        for plan in manifest.configuration.plans {
-
-            switch manifest.configuration.outputPackage {
-            case .none:
-                break
-            case .stickerPack:
-                break
-            case .imageSet:
-                break
-            case .iconSet:
-                processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
-                continue
-            case .icns:
-                processIcns(srcImagePath: srcImagePath, plan: plan)
-                continue
-            case .catalog:
-                break
-            case .catalogFolder:
-                break
-            }
-
-            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
-                print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
-                continue
-            }
-
-            var dstName = srcImagePath.lastPathComponent
-            let dstFormat = ImageFormat.formatForPath(dstName)
-            if dstFormat == .unchanged {
-                print("\(srcImagePath) has an unsupported source format.")
-                continue
-            }
-            if plan.outputFormat != .unchanged {
-                dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
-            }
-
-            var dstPath = catalogFolderSegmentPath.appendingPathComponent(dstName)
-
-            if plan.removeSuffix != nil || plan.addSuffix != nil {
-                dstPath = dstPath.changeFileSuffix(from: plan.removeSuffix ?? "", to: plan.addSuffix ?? "")
-            }
-
-            let srcImageUrl = URL(fileURLWithPath: srcImagePath)
-            let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
-            var srcImage: CGImage?
-            if let srcImageSource = srcImageSource {
-                srcImage = CGImageSourceCreateImageAtIndex(srcImageSource, 0, nil)
-            }
-
-            if srcImage == nil {
-                print("Failed to load image \(srcImagePath).")
-                continue
-            }
-
-            var dstImage: CGImage?
-            var newWidth: Int = 0
-            var newHeight: Int = 0
-
-            if let srcImage = srcImage {
-                if plan.scale != 0 {
-                    if plan.scale != 1 {
-                        newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
-                        newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
-                    }
-                } else {
-                    if plan.boxWidth == 0 && plan.boxHeight == 0 {
-                        // no action
-                    } else {
-                        if plan.boxWidth == 0 {
-                            newWidth = plan.boxHeight
-                            newHeight = plan.boxHeight
-                        } else if plan.boxHeight == 0 {
-                            newWidth = plan.boxWidth
-                            newHeight = plan.boxWidth
-                        } else {
-                            newWidth = plan.boxWidth
-                            newHeight = plan.boxHeight
-                        }
-                        if plan.aspectWithMaxBox == true {
-                            var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
-                            let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
-                            newWidth = Int(fit.width)
-                            newHeight = Int(fit.height)
-                        }
-                    }
-                }
-                if newWidth != 0 && newHeight != 0 {
-                    dstImage = scale(image: srcImage, width: newWidth, height: newHeight)
-                }
-            }
-
-            switch manifest.configuration.outputPackage {
-            case .none:
-                break
-            case .stickerPack:
-                dstPath = insertStickerToPack(dstPath)
-            case .imageSet, .catalog, .catalogFolder:
-                if oneTimeDone == false {
-                    clearImageSet(dstPath)
-                    oneTimeDone = true
-                }
-                dstPath = insertImageToSet(dstPath)
-            case .iconSet:
-                break
-            case .icns:
-                break
-            }
-
-            if let image = dstImage {
-                write(image: image, path: dstPath)
-            } else if let image = srcImage {
-                write(image: image, path: dstPath)
-            }
-
-            let fileSize = getSize(of: URL(fileURLWithPath: dstPath))
-            if fileSize > maxFileSize {
-                maxFileSize = fileSize
-            }
+        var modes: [ProcessMode] = [.normal]
+        if manifest.configuration.masksToo == true {
+            modes.append(.mask)
         }
 
-        catalogFolderSegmentAccumulatedSize += maxFileSize
+        for mode in modes {
+            var oneTimeDone: Bool = false
+            var maxFileSize: Int = 0
+
+            for plan in manifest.configuration.plans {
+                switch manifest.configuration.outputPackage {
+                case .none:
+                    break
+                case .stickerPack:
+                    break
+                case .imageSet:
+                    break
+                case .iconSet:
+                    processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
+                    continue
+                case .icns:
+                    processIcns(srcImagePath: srcImagePath, plan: plan)
+                    continue
+                case .catalog:
+                    break
+                case .catalogFolder:
+                    break
+                }
+
+                if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
+                    print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
+                    continue
+                }
+
+                var dstName = srcImagePath.lastPathComponent
+                if mode == .mask {
+                    dstName = dstName.changeFileSuffix(from: "", to: "_mask")
+                }
+                let dstFormat = ImageFormat.formatForPath(dstName)
+                if dstFormat == .unchanged {
+                    print("\(srcImagePath) has an unsupported source format.")
+                    continue
+                }
+                if plan.outputFormat != .unchanged {
+                    dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
+                }
+                if mode == .mask {
+                    dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: ImageFormat.PNG.rawValue)
+                }
+
+                var dstPath = catalogFolderSegmentPath.appendingPathComponent(dstName)
+
+                if plan.removeSuffix != nil || plan.addSuffix != nil {
+                    dstPath = dstPath.changeFileSuffix(from: plan.removeSuffix ?? "", to: plan.addSuffix ?? "")
+                }
+
+                let srcImageUrl = URL(fileURLWithPath: srcImagePath)
+                let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
+                var srcImage: CGImage?
+                if let srcImageSource = srcImageSource {
+                    srcImage = CGImageSourceCreateImageAtIndex(srcImageSource, 0, nil)
+                }
+
+                if srcImage == nil {
+                    print("Failed to load image \(srcImagePath).")
+                    continue
+                }
+
+                var dstImage: CGImage?
+                var newWidth: Int = 0
+                var newHeight: Int = 0
+
+                if let srcImage = srcImage {
+                    if plan.scale != 0 {
+                        if plan.scale != 1 {
+                            newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
+                            newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
+                        }
+                    } else {
+                        if plan.boxWidth == 0 && plan.boxHeight == 0 {
+                            // no action
+                        } else {
+                            if plan.boxWidth == 0 {
+                                newWidth = plan.boxHeight
+                                newHeight = plan.boxHeight
+                            } else if plan.boxHeight == 0 {
+                                newWidth = plan.boxWidth
+                                newHeight = plan.boxWidth
+                            } else {
+                                newWidth = plan.boxWidth
+                                newHeight = plan.boxHeight
+                            }
+                            if plan.aspectWithMaxBox == true {
+                                var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
+                                let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
+                                newWidth = Int(fit.width)
+                                newHeight = Int(fit.height)
+                            }
+                        }
+                    }
+                    if newWidth != 0 && newHeight != 0 {
+                        dstImage = scale(image: srcImage, width: newWidth, height: newHeight, processMode: mode)
+                    }
+                }
+
+                switch manifest.configuration.outputPackage {
+                case .none:
+                    break
+                case .stickerPack:
+                    dstPath = insertStickerToPack(dstPath)
+                case .imageSet, .catalog, .catalogFolder:
+                    if oneTimeDone == false {
+                        clearImageSet(dstPath)
+                        oneTimeDone = true
+                    }
+                    dstPath = insertImageToSet(dstPath)
+                case .iconSet:
+                    break
+                case .icns:
+                    break
+                }
+
+                if let image = dstImage {
+                    write(image: image, path: dstPath)
+                } else if let image = srcImage {
+                    write(image: image, path: dstPath)
+                }
+
+                let fileSize = getSize(of: URL(fileURLWithPath: dstPath))
+                if fileSize > maxFileSize {
+                    maxFileSize = fileSize
+                }
+            }
+
+            catalogFolderSegmentAccumulatedSize += maxFileSize
+        }
     }
 
     // swiftlint:enable cyclomatic_complexity

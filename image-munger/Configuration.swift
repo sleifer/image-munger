@@ -97,52 +97,54 @@ enum PackageType: String {
 }
 
 class Configuation {
-    var valid: Bool
-    var error: String?
-    var srcDirPath: String
-    var ovalSrcDirPath: String
-    var squareSrcDirPath: String
-    var dstDirPath: String
-    var manifestPath: String
-    var preset: PresetType
-    var validExtensions: [String]
-    var outManifestPath: String?
-    var outputFormat: ImageFormat
-    var outputPackage: PackageType
-    var outPackageReplace: Bool
+    var backgroundColor: NSColor?
+    var catalogFolderMaxSize: Int
     var catalogFolderNamespace: Bool
     var catalogFolderTag: String?
-    var catalogFolderMaxSize: Int
-    var scale: Double
-    var maxWidth: Int
+    var dstDirPath: String
+    var error: String?
+    var manifestPath: String
+    var masksToo: Bool
     var maxHeight: Int
-    var backgroundColor: NSColor?
+    var maxWidth: Int
+    var outManifestPath: String?
+    var outPackageReplace: Bool
+    var outputFormat: ImageFormat
+    var outputPackage: PackageType
+    var ovalSrcDirPath: String
+    var preset: PresetType
+    var scale: Double
+    var squareSrcDirPath: String
+    var srcDirPath: String
+    var valid: Bool
+    var validExtensions: [String]
 
     lazy var plans: [Plan] = {
         return makePlans()
     }()
 
     init() {
-        valid = false
-        error = nil
-        srcDirPath = ""
-        ovalSrcDirPath = ""
-        squareSrcDirPath = ""
-        dstDirPath = ""
-        manifestPath = ""
-        preset = .none
-        validExtensions = ["jpg", "png", "gif", "tif"]
-        outManifestPath = nil
-        outputFormat = .unchanged
-        outputPackage = .none
-        outPackageReplace = false
+        backgroundColor = nil
+        catalogFolderMaxSize = 0
         catalogFolderNamespace = false
         catalogFolderTag = nil
-        catalogFolderMaxSize = 0
-        scale = 0.0
-        maxWidth = 0
+        dstDirPath = ""
+        error = nil
+        manifestPath = ""
+        masksToo = false
         maxHeight = 0
-        backgroundColor = nil
+        maxWidth = 0
+        outManifestPath = nil
+        outPackageReplace = false
+        outputFormat = .unchanged
+        outputPackage = .none
+        ovalSrcDirPath = ""
+        preset = .none
+        scale = 0.0
+        squareSrcDirPath = ""
+        srcDirPath = ""
+        valid = false
+        validExtensions = ["jpg", "png", "gif", "tif"]
     }
 
     func filterByExtension(files: [String]) -> [String] {

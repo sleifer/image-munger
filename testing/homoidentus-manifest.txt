@@ -3,9 +3,9 @@
 = dst,~~~/homoidentus.xcassets/catalog
 = preset,imageSet
 = max-px, 1704
-= background-color, 50: 50: 250
 = out-format, jpg
 = out-package, catalogfolder
+= masks-too, true
 = catalogfolder-max-size, 1000
 = catalog-folder-namespace, true
 = catalog-folder-tag, catalog
@@ -17,8 +17,8 @@ shuttle.png
 = dst,~~~/homoidentus.xcassets/thumbnail
 = preset,imageSet
 = max-px, 300
-= background-color, 50: 50: 250
 = out-format, jpg
+= masks-too, true
 = out-package, catalogfolder
 = catalog-folder-namespace, true
 = out-package-replace, true
