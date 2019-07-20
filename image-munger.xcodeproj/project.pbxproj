@@ -15,6 +15,7 @@
 		DB1BCF9221396EDF006F3D04 /* ProcessCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE2DA2F213186EB0056C931 /* ProcessCommand.swift */; };
 		DB1BCFE021397C68006F3D04 /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFDF21397C68006F3D04 /* Mappings.swift */; };
 		DB1BCFE121397C68006F3D04 /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB1BCFDF21397C68006F3D04 /* Mappings.swift */; };
+		DB6401AB22E3831400CEEBB5 /* CGRect-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */; };
 		DB994DEC22E0E3A500E29EEC /* homoidentus-test-only.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = DB994DEB22E0E3A500E29EEC /* homoidentus-test-only.xctestplan */; };
 		DBB9B43B2142A3CC00078E5A /* libObjectMapper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB9B43A2142A3CC00078E5A /* libObjectMapper.a */; };
 		DBB9B43C21445FD700078E5A /* libObjectMapper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB9B43A2142A3CC00078E5A /* libObjectMapper.a */; };
@@ -43,6 +44,7 @@
 		DB1BCF8721396CDB006F3D04 /* ImageMungerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMungerTests.swift; sourceTree = "<group>"; };
 		DB1BCF8921396CDB006F3D04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB1BCFDF21397C68006F3D04 /* Mappings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappings.swift; sourceTree = "<group>"; };
+		DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect-Extension.swift"; sourceTree = "<group>"; };
 		DB6756EC22DF5BB2004C8F0D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DB994DEA22E0E35100E29EEC /* image-munger.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "image-munger.xctestplan"; sourceTree = "<group>"; };
 		DB994DEB22E0E3A500E29EEC /* homoidentus-test-only.xctestplan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "homoidentus-test-only.xctestplan"; sourceTree = "<group>"; };
@@ -118,12 +120,13 @@
 		DBE2DA1F2130CA160056C931 /* image-munger */ = {
 			isa = PBXGroup;
 			children = (
+				DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */,
+				DBE2DA2B2130CCD00056C931 /* CommandHandlers */,
+				DBCB90552134402000CB3B04 /* Configuration.swift */,
 				DBE2DA202130CA160056C931 /* main.swift */,
 				DBCB90522133662C00CB3B04 /* Manifest.swift */,
-				DBCB90552134402000CB3B04 /* Configuration.swift */,
-				DBDD18302136D27500C84FF0 /* Plan.swift */,
 				DB1BCFDF21397C68006F3D04 /* Mappings.swift */,
-				DBE2DA2B2130CCD00056C931 /* CommandHandlers */,
+				DBDD18302136D27500C84FF0 /* Plan.swift */,
 			);
 			path = "image-munger";
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				DBCB90562134402000CB3B04 /* Configuration.swift in Sources */,
 				DBDD18312136D27500C84FF0 /* Plan.swift in Sources */,
 				DBE2DA212130CA160056C931 /* main.swift in Sources */,
+				DB6401AB22E3831400CEEBB5 /* CGRect-Extension.swift in Sources */,
 				DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */,
 				DBE2DA30213186EB0056C931 /* ProcessCommand.swift in Sources */,
 			);
