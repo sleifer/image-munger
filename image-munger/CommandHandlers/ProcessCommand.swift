@@ -529,7 +529,7 @@ class ProcessCommand: Command {
             context.clear(fullRect)
             context.setFillColor(gray: 1, alpha: 1)
             context.fill(fullRect)
-            context.setBlendMode(.destinationOut)
+            context.setBlendMode(.destinationAtop)
             context.draw(image, in: srcRect)
             return context.makeImage()
         }
