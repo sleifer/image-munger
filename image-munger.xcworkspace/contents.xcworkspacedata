@@ -4,10 +4,4 @@
    <FileRef
       location = "container:image-munger.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:submodules/CommandLineCore/CommandLineCore.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:submodules/ObjectMapper/ObjectMapper.xcodeproj">
-   </FileRef>
 </Workspace>

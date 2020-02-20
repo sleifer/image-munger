@@ -9,8 +9,6 @@
 import Foundation
 import CommandLineCore
 
-let toolVersion = "0.1.17"
-
 func main() {
     #if DEBUG
     // for testing in Xcode
@@ -19,7 +17,7 @@ func main() {
     #endif
 
     let core = CommandCore()
-    core.set(version: toolVersion)
+    core.set(version: fullVersion)
     core.set(help: "A command-line tool to help automate image processing for projects.")
     core.set(defaultCommand: "process")
 
