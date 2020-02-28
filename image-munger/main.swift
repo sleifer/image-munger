@@ -17,7 +17,7 @@ func main() {
     #endif
 
     let core = CommandCore()
-    core.set(version: fullVersion)
+    core.set(version: VersionStrings.fullVersion)
     core.set(help: "A command-line tool to help automate image processing for projects.")
     core.set(defaultCommand: "process")
 

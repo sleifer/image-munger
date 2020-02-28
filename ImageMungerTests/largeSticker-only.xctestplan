@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "A0E5C93C-23F8-4712-93C0-68CFA411FBBB",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "selectedTests" : [
+        "ImageMungerTests\/testManifest03_largeSticker()"
+      ],
+      "target" : {
+        "containerPath" : "container:image-munger.xcodeproj",
+        "identifier" : "DB1BCF8421396CDB006F3D04",
+        "name" : "ImageMungerTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -29,7 +29,7 @@ class ImageMungerTests: XCTestCase {
     override class func setUp() {
         super.setUp()
 
-        if let projectDir = ProcessInfo.processInfo.environment["PROJECT_DIR"] {
+        if let projectDir = ProcessInfo.processInfo.environment["OLDPWD"] {
             FileManager.default.changeCurrentDirectoryPath(projectDir)
         }
 
@@ -63,7 +63,7 @@ class ImageMungerTests: XCTestCase {
     }
 
     func testFilePath(srcSubPath: String) throws -> String {
-        if let projectDir = ProcessInfo.processInfo.environment["PROJECT_DIR"] {
+        if let projectDir = ProcessInfo.processInfo.environment["OLDPWD"] {
             let path = projectDir.appendingPathComponent("testing").appendingPathComponent(srcSubPath)
 
             return path
@@ -74,7 +74,7 @@ class ImageMungerTests: XCTestCase {
 
     @discardableResult
     func prepareFiles(srcSubPath: String, dstSubPath: String) throws -> String {
-        if let projectDir = ProcessInfo.processInfo.environment["PROJECT_DIR"] {
+        if let projectDir = ProcessInfo.processInfo.environment["OLDPWD"] {
             let packPath = projectDir.appendingPathComponent("testing").appendingPathComponent(srcSubPath)
             let dstPath = ImageMungerTests.deskPath.appendingPathComponent(dstSubPath)
 

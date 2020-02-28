@@ -457,8 +457,8 @@ class ProcessCommand: Command {
             nW = (src.width / src.height * nH).rounded(.down)
         }
 
-        dst.origin.x = ((dst.size.width - nW) / 2.0).rounded(.down)
-        dst.origin.y = ((dst.size.height - nH) / 2.0).rounded(.down)
+        dst.origin.x += ((dst.size.width - nW) / 2.0).rounded(.down)
+        dst.origin.y += ((dst.size.height - nH) / 2.0).rounded(.down)
         dst.size.width = nW
         dst.size.height = nH
 
@@ -484,9 +484,19 @@ class ProcessCommand: Command {
         return newSrc
     }
 
-    func scale(image: CGImage, width: Int, height: Int, scaleMode: ScaleMode = .aspectFit, processMode: ProcessMode = .normal) -> CGImage? {
+    func scale(image: CGImage, width: Int, height: Int, scaleMode: ScaleMode = .aspectFit, processMode: ProcessMode = .normal, srcPadPercent: Double = 0) -> CGImage? {
         var srcRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
         var dstRect = CGRect(x: 0, y: 0, width: width, height: height)
+        if srcPadPercent != 0.0 {
+            var dw = Double(width) * srcPadPercent
+            var dh = Double(height) * srcPadPercent
+            if dw > dh {
+                dh = dw * Double(height) / Double(width)
+            } else {
+                dw = dh * Double(width) / Double(height)
+            }
+            dstRect = dstRect.insetBy(dx: CGFloat(dw).rounded(.down), dy: CGFloat(dh).rounded(.down))
+        }
         let fullRect = dstRect
 
         switch scaleMode {
@@ -857,128 +867,143 @@ class ProcessCommand: Command {
             var maxFileSize: Int = 0
 
             for plan in manifest.configuration.plans {
-                switch manifest.configuration.outputPackage {
-                case .none:
-                    break
-                case .stickerPack:
-                    break
-                case .imageSet:
-                    break
-                case .iconSet:
-                    processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
-                    continue
-                case .icns:
-                    processIcns(srcImagePath: srcImagePath, plan: plan)
-                    continue
-                case .catalog:
-                    break
-                case .catalogFolder:
-                    break
-                }
+                var srcPadPercent: Double = 0
+                var sizePassed: Bool = false
+                repeat {
+                    switch manifest.configuration.outputPackage {
+                    case .none:
+                        break
+                    case .stickerPack:
+                        break
+                    case .imageSet:
+                        break
+                    case .iconSet:
+                        processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
+                        continue
+                    case .icns:
+                        processIcns(srcImagePath: srcImagePath, plan: plan)
+                        continue
+                    case .catalog:
+                        break
+                    case .catalogFolder:
+                        break
+                    }
 
-                if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
-                    print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
-                    continue
-                }
+                    if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
+                        print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
+                        continue
+                    }
 
-                var dstName = srcImagePath.lastPathComponent
-                if mode == .mask {
-                    dstName = dstName.changeFileSuffix(from: "", to: "_mask")
-                }
-                let dstFormat = ImageFormat.formatForPath(dstName)
-                if dstFormat == .unchanged {
-                    print("\(srcImagePath) has an unsupported source format.")
-                    continue
-                }
-                if plan.outputFormat != .unchanged {
-                    dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
-                }
-                if mode == .mask {
-                    dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: ImageFormat.PNG.rawValue)
-                }
+                    var dstName = srcImagePath.lastPathComponent
+                    if mode == .mask {
+                        dstName = dstName.changeFileSuffix(from: "", to: "_mask")
+                    }
+                    let dstFormat = ImageFormat.formatForPath(dstName)
+                    if dstFormat == .unchanged {
+                        print("\(srcImagePath) has an unsupported source format.")
+                        continue
+                    }
+                    if plan.outputFormat != .unchanged {
+                        dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
+                    }
+                    if mode == .mask {
+                        dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: ImageFormat.PNG.rawValue)
+                    }
 
-                var dstPath = catalogFolderSegmentPath.appendingPathComponent(dstName)
+                    var dstPath = catalogFolderSegmentPath.appendingPathComponent(dstName)
 
-                if plan.removeSuffix != nil || plan.addSuffix != nil {
-                    dstPath = dstPath.changeFileSuffix(from: plan.removeSuffix ?? "", to: plan.addSuffix ?? "")
-                }
+                    if plan.removeSuffix != nil || plan.addSuffix != nil {
+                        dstPath = dstPath.changeFileSuffix(from: plan.removeSuffix ?? "", to: plan.addSuffix ?? "")
+                    }
 
-                let srcImageUrl = URL(fileURLWithPath: srcImagePath)
-                let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
-                var srcImage: CGImage?
-                if let srcImageSource = srcImageSource {
-                    srcImage = CGImageSourceCreateImageAtIndex(srcImageSource, 0, nil)
-                }
+                    let srcImageUrl = URL(fileURLWithPath: srcImagePath)
+                    let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
+                    var srcImage: CGImage?
+                    if let srcImageSource = srcImageSource {
+                        srcImage = CGImageSourceCreateImageAtIndex(srcImageSource, 0, nil)
+                    }
 
-                if srcImage == nil {
-                    print("Failed to load image \(srcImagePath).")
-                    continue
-                }
+                    if srcImage == nil {
+                        print("Failed to load image \(srcImagePath).")
+                        continue
+                    }
 
-                var dstImage: CGImage?
-                var newWidth: Int = 0
-                var newHeight: Int = 0
+                    var dstImage: CGImage?
+                    var newWidth: Int = 0
+                    var newHeight: Int = 0
 
-                if let srcImage = srcImage {
-                    if plan.scale != 0 {
-                        if plan.scale != 1 {
-                            newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
-                            newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
+                    if let srcImage = srcImage {
+                        if plan.scale != 0 {
+                            if plan.scale != 1 {
+                                newWidth = Int((Double(srcImage.width) * plan.scale).rounded(.down))
+                                newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
+                            }
+                        } else {
+                            if plan.boxWidth == 0, plan.boxHeight == 0 {
+                                // no action
+                            } else {
+                                if plan.boxWidth == 0 {
+                                    newWidth = plan.boxHeight
+                                    newHeight = plan.boxHeight
+                                } else if plan.boxHeight == 0 {
+                                    newWidth = plan.boxWidth
+                                    newHeight = plan.boxWidth
+                                } else {
+                                    newWidth = plan.boxWidth
+                                    newHeight = plan.boxHeight
+                                }
+                                if plan.aspectWithMaxBox == true {
+                                    var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
+                                    let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
+                                    newWidth = Int(fit.width)
+                                    newHeight = Int(fit.height)
+                                }
+                            }
+                        }
+                        if newWidth != 0, newHeight != 0 {
+                            dstImage = scale(image: srcImage, width: newWidth, height: newHeight, processMode: mode, srcPadPercent: srcPadPercent)
+                        }
+                    }
+
+                    switch manifest.configuration.outputPackage {
+                    case .none:
+                        break
+                    case .stickerPack:
+                        dstPath = insertStickerToPack(dstPath)
+                    case .imageSet, .catalog, .catalogFolder:
+                        if oneTimeDone == false {
+                            clearImageSet(dstPath)
+                            oneTimeDone = true
+                        }
+                        dstPath = insertImageToSet(dstPath)
+                    case .iconSet:
+                        break
+                    case .icns:
+                        break
+                    }
+
+                    if let image = dstImage {
+                        write(image: image, path: dstPath)
+                    } else if let image = srcImage {
+                        write(image: image, path: dstPath)
+                    }
+
+                    let fileSize = getSize(of: URL(fileURLWithPath: dstPath))
+
+                    if manifest.configuration.outputPackage == .stickerPack, fileSize > 500000 {
+                        srcPadPercent += 0.01
+                        print("\(dstPath.lastPathComponent) is too large (> 500,000 bytes) at size \(fileSize) ... adding padding")
+                        if srcPadPercent > 0.5 {
+                            sizePassed = true
                         }
                     } else {
-                        if plan.boxWidth == 0, plan.boxHeight == 0 {
-                            // no action
-                        } else {
-                            if plan.boxWidth == 0 {
-                                newWidth = plan.boxHeight
-                                newHeight = plan.boxHeight
-                            } else if plan.boxHeight == 0 {
-                                newWidth = plan.boxWidth
-                                newHeight = plan.boxWidth
-                            } else {
-                                newWidth = plan.boxWidth
-                                newHeight = plan.boxHeight
-                            }
-                            if plan.aspectWithMaxBox == true {
-                                var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
-                                let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
-                                newWidth = Int(fit.width)
-                                newHeight = Int(fit.height)
-                            }
-                        }
+                        sizePassed = true
                     }
-                    if newWidth != 0, newHeight != 0 {
-                        dstImage = scale(image: srcImage, width: newWidth, height: newHeight, processMode: mode)
+
+                    if fileSize > maxFileSize {
+                        maxFileSize = fileSize
                     }
-                }
-
-                switch manifest.configuration.outputPackage {
-                case .none:
-                    break
-                case .stickerPack:
-                    dstPath = insertStickerToPack(dstPath)
-                case .imageSet, .catalog, .catalogFolder:
-                    if oneTimeDone == false {
-                        clearImageSet(dstPath)
-                        oneTimeDone = true
-                    }
-                    dstPath = insertImageToSet(dstPath)
-                case .iconSet:
-                    break
-                case .icns:
-                    break
-                }
-
-                if let image = dstImage {
-                    write(image: image, path: dstPath)
-                } else if let image = srcImage {
-                    write(image: image, path: dstPath)
-                }
-
-                let fileSize = getSize(of: URL(fileURLWithPath: dstPath))
-                if fileSize > maxFileSize {
-                    maxFileSize = fileSize
-                }
+                } while sizePassed == false
             }
 
             catalogFolderSegmentAccumulatedSize += maxFileSize

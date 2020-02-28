@@ -48,7 +48,10 @@
             reference = "container:ImageMungerTests/image-munger.xctestplan">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:ImageMungerTests/homoidentus-test-only.xctestplan"
+            reference = "container:ImageMungerTests/homoidentus-test-only.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:ImageMungerTests/largeSticker-only.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
