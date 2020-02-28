@@ -6,8 +6,8 @@
 //  Copyright © 2018 droolingcat.com. All rights reserved.
 //
 
-import Foundation
 import CommandLineCore
+import Foundation
 
 enum ProcessError: Error, LocalizedError {
     case validate(String)
@@ -47,8 +47,7 @@ class ProcessCommand: Command {
     var catalogFolderSegmentBasePath: String = ""
     var catalogFolderSegmentPath: String = ""
 
-    required init() {
-    }
+    required init() {}
 
     func run(cmd: ParsedCommand, core: CommandCore) {
         if cmd.parameters.count == 0 {
@@ -82,7 +81,7 @@ class ProcessCommand: Command {
                 if manifests[idx].configuration.squareSrcDirPath.count > 0 {
                     try collectFiles(manifest: &manifests[idx], group: .square)
                 }
-                self.manifest = manifests[idx]
+                manifest = manifests[idx]
                 process()
             } catch {
                 print(error.localizedDescription)
@@ -202,7 +201,7 @@ class ProcessCommand: Command {
     func validate(manifest: Manifest) throws {
         let cfg = manifest.configuration
 
-        if cfg.srcDirPath == "" && (cfg.ovalSrcDirPath == "" || cfg.squareSrcDirPath == "") {
+        if cfg.srcDirPath == "", cfg.ovalSrcDirPath == "" || cfg.squareSrcDirPath == "" {
             cfg.valid = false
             cfg.error = "Missing src."
             throw ProcessError.validate(cfg.error ?? "")
@@ -226,17 +225,14 @@ class ProcessCommand: Command {
     func clearStickerPack(folder: String) {
         let fm = FileManager.default
         do {
-            let path = folder.appendingPathComponent("Contents.json")
-            let json = try String(contentsOfFile: path)
-            if let contents = StickerPackContents(JSONString: json) {
-                for item in contents.stickers {
-                    let itemPath = folder.appendingPathComponent(item.filename)
-                    try fm.removeItem(atPath: itemPath)
-                }
-                contents.stickers.removeAll()
-                let JSONString = contents.toJSONString(prettyPrint: true)
-                try JSONString?.write(toFile: path, atomically: true, encoding: .utf8)
+            let url = URL(fileURLWithPath: folder.appendingPathComponent("Contents.json"))
+            let contents = try StickerPackContents.read(contentsOf: url).get()
+            for item in contents.stickers {
+                let itemPath = folder.appendingPathComponent(item.filename)
+                try fm.removeItem(atPath: itemPath)
             }
+            contents.stickers.removeAll()
+            _ = try contents.write(to: url, pretty: true).get()
         } catch {
             print("Error in clearStickerPack: \(error)")
         }
@@ -271,9 +267,8 @@ class ProcessCommand: Command {
                     contents.properties.onDemandResourceTags.append(tag)
                 }
             }
-            let path = folder.appendingPathComponent("Contents.json")
-            let JSONString = contents.toJSONString(prettyPrint: true)
-            try JSONString?.write(toFile: path, atomically: true, encoding: .utf8)
+            let url = URL(fileURLWithPath: folder.appendingPathComponent("Contents.json"))
+            _ = try contents.write(to: url, pretty: true).get()
         } catch {
             print("Error in clearCatalog: \(error)")
         }
@@ -338,15 +333,15 @@ class ProcessCommand: Command {
             // no pre-action
             break
         case .iconSet:
-            if cfg.dstDirPath.hasSuffix(".appiconset") == false && cfg.dstDirPath.hasSuffix(".stickersiconset") == false {
+            if cfg.dstDirPath.hasSuffix(".appiconset") == false, cfg.dstDirPath.hasSuffix(".stickersiconset") == false {
                 print("\(cfg.dstDirPath) is not a .appiconset or .stickersiconset directory.")
                 return
             }
-            if manifest.files.count != 1 && manifest.ovalFiles.count == 0 && manifest.squareFiles.count == 0 {
+            if manifest.files.count != 1, manifest.ovalFiles.count == 0, manifest.squareFiles.count == 0 {
                 print("Only 1 source image allowed when using iconset package. Found \(manifest.files.count).")
                 return
             }
-            if manifest.files.count == 0 && (manifest.ovalFiles.count != 1 || manifest.squareFiles.count != 1) {
+            if manifest.files.count == 0, manifest.ovalFiles.count != 1 || manifest.squareFiles.count != 1 {
                 print("Only 1 source image allowed when using iconset package. Found \(manifest.ovalFiles.count)/\(manifest.squareFiles.count).")
                 return
             }
@@ -401,7 +396,7 @@ class ProcessCommand: Command {
 
         var outManifest: [String] = []
 
-        if manifest.ovalFiles.count == manifest.squareFiles.count && manifest.ovalFiles.count != 0 {
+        if manifest.ovalFiles.count == manifest.squareFiles.count, manifest.ovalFiles.count != 0 {
             for idx in 0..<manifest.ovalFiles.count {
                 let ovalPath = cfg.ovalSrcDirPath.appendingPathComponent(manifest.ovalFiles[idx])
                 let squarePath = cfg.squareSrcDirPath.appendingPathComponent(manifest.squareFiles[idx])
@@ -506,7 +501,7 @@ class ProcessCommand: Command {
             let bytesPerRow = width * 4
             let colorSpace = CGColorSpaceCreateDeviceRGB()
             let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-            guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+            guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
                 print("Can't create CGContext. width: \(width), height: \(height), bytes per row: \(bytesPerRow)")
                 return nil
             }
@@ -521,7 +516,7 @@ class ProcessCommand: Command {
         case .mask:
             let colorSpace = CGColorSpaceCreateDeviceGray()
             let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue)
-            guard let context = CGContext.init(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+            guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
                 print("Can't create CGContext. width: \(width), height: \(height)")
                 return nil
             }
@@ -541,75 +536,46 @@ class ProcessCommand: Command {
     }
 
     func setStickerPackSize(_ path: String, size: String) {
-        var contents: StickerPackContents?
-
-        let contentsPath = path.appendingPathComponent("Contents.json")
         do {
-            let json = try String(contentsOfFile: contentsPath)
-            contents = StickerPackContents(JSONString: json)
+            let url = URL(fileURLWithPath: path.appendingPathComponent("Contents.json"))
+            let contents = try StickerPackContents.read(contentsOf: url).get()
+            contents.properties.gridSize = size
+            _ = try contents.write(to: url, pretty: true).get()
         } catch {
             print("Error in setStickerPackSize: \(error)")
-        }
-
-        if let contents = contents {
-            contents.properties.gridSize = size
-
-            do {
-                let JSONString = contents.toJSONString(prettyPrint: true)
-                try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
-            } catch {
-                print("Error in setStickerPackSize: \(error)")
-            }
         }
     }
 
     func insertStickerToPack(_ path: String) -> String {
-        let fm = FileManager.default
-        var contents: StickerPackContents?
-
-        let contentsPath = path.deletingLastPathComponent.appendingPathComponent("Contents.json")
         do {
-            let json = try String(contentsOfFile: contentsPath)
-            contents = StickerPackContents(JSONString: json)
-        } catch {
-            print("Error in insertStickerToPack: \(error)")
-        }
+            let fm = FileManager.default
+            let contentsPath = path.deletingLastPathComponent.appendingPathComponent("Contents.json")
+            let contents = try StickerPackContents.read(contentsOf: URL(fileURLWithPath: contentsPath)).get()
 
-        let stickerDirPath = path.changeFileExtension(to: "sticker")
-        let stickerContentsPath = stickerDirPath.appendingPathComponent("Contents.json")
-        let stickerImagePath = stickerDirPath.appendingPathComponent(path.lastPathComponent)
+            let stickerDirPath = path.changeFileExtension(to: "sticker")
+            let stickerContentsPath = stickerDirPath.appendingPathComponent("Contents.json")
+            let stickerImagePath = stickerDirPath.appendingPathComponent(path.lastPathComponent)
 
-        do {
             try fm.createDirectory(atPath: stickerDirPath, withIntermediateDirectories: true)
-        } catch {
-            print("Error creating \(stickerDirPath): \(error)")
-        }
 
-        do {
-            let contents = StickerContents()
-            contents.info.author = "xcode"
-            contents.info.version = 1
-            contents.properties.filename = path.lastPathComponent
-            let JSONString = contents.toJSONString(prettyPrint: true)
-            try JSONString?.write(toFile: stickerContentsPath, atomically: true, encoding: .utf8)
-        } catch {
-            print("Error in insertStickerToPack: \(error)")
-        }
+            let stickerContents = StickerContents()
+            stickerContents.info.author = "xcode"
+            stickerContents.info.version = 1
+            stickerContents.properties.filename = path.lastPathComponent
+            _ = try stickerContents.write(to: URL(fileURLWithPath: stickerContentsPath), pretty: true).get()
 
-        if let contents = contents {
             let newSticker = StickerPackContentsSticker()
             newSticker.filename = path.lastPathComponent.changeFileExtension(to: "sticker")
             contents.stickers.append(newSticker)
 
-            do {
-                let JSONString = contents.toJSONString(prettyPrint: true)
-                try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
-            } catch {
-                print("Error in insertStickerToPack: \(error)")
-            }
+            _ = try contents.write(to: URL(fileURLWithPath: contentsPath), pretty: true).get()
+
+            return stickerImagePath
+        } catch {
+            print("Error in insertStickerToPack: \(error)")
         }
 
-        return stickerImagePath
+        return ""
     }
 
     func imageSetPathFromImagePath(_ path: String) -> String {
@@ -641,50 +607,39 @@ class ProcessCommand: Command {
             let contents = ImageSetContents()
             contents.info.author = "xcode"
             contents.info.version = 1
-            let contentsPath = setPath.appendingPathComponent("Contents.json")
-            let JSONString = contents.toJSONString(prettyPrint: true)
-            try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
+            _ = try contents.write(to: URL(fileURLWithPath: setPath.appendingPathComponent("Contents.json")), pretty: true).get()
         } catch {
             print("Error in clearImageSet: \(error)")
         }
     }
 
     func insertImageToSet(_ path: String) -> String {
-        let setPath = imageSetPathFromImagePath(path)
-        var contents: ImageSetContents?
-
-        let contentsPath = setPath.appendingPathComponent("Contents.json")
         do {
-            let json = try String(contentsOfFile: contentsPath)
-            contents = ImageSetContents(JSONString: json)
+            let setPath = imageSetPathFromImagePath(path)
+            let url = URL(fileURLWithPath: setPath.appendingPathComponent("Contents.json"))
+            let contents = try ImageSetContents.read(contentsOf: url).get()
+
+            let newFileName = path.lastPathComponent
+            let imageRecord = ImageSetContentsImage()
+            imageRecord.idiom = "universal"
+            imageRecord.filename = newFileName
+            if newFileName.hasFileSuffix("@2x") == true {
+                imageRecord.scale = "2x"
+            } else if newFileName.hasFileSuffix("@3x") == true {
+                imageRecord.scale = "3x"
+            } else {
+                imageRecord.scale = "1x"
+            }
+
+            contents.images.append(imageRecord)
+
+            _ = try contents.write(to: url, pretty: true).get()
+
+            return setPath.appendingPathComponent(newFileName)
         } catch {
             print("Error in insertImageToSet: \(error)")
         }
-
-        let newFileName = path.lastPathComponent
-        let imageRecord = ImageSetContentsImage()
-        imageRecord.idiom = "universal"
-        imageRecord.filename = newFileName
-        if newFileName.hasFileSuffix("@2x") == true {
-            imageRecord.scale = "2x"
-        } else if newFileName.hasFileSuffix("@3x") == true {
-            imageRecord.scale = "3x"
-        } else {
-            imageRecord.scale = "1x"
-        }
-
-        if let contents = contents {
-            contents.images.append(imageRecord)
-
-            do {
-                let JSONString = contents.toJSONString(prettyPrint: true)
-                try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
-            } catch {
-                print("Error in insertImageToSet: \(error)")
-            }
-        }
-
-        return setPath.appendingPathComponent(newFileName)
+        return ""
     }
 
     func write(image: CGImage, path: String) {
@@ -708,16 +663,10 @@ class ProcessCommand: Command {
     func processIconSet(srcImagePath: String, ovalSrcImagePath: String?, plan: Plan) {
         let dstFolderPath = catalogFolderSegmentPath
 
-        let contentsPath = dstFolderPath.appendingPathComponent("Contents.json")
-        var contents: ImageSetContents?
         do {
-            let json = try String(contentsOfFile: contentsPath)
-            contents = ImageSetContents(JSONString: json)
-        } catch {
-            print("Error in processIconSet: \(error)")
-        }
+            let url = URL(fileURLWithPath: dstFolderPath.appendingPathComponent("Contents.json"))
+            let contents = try ImageSetContents.read(contentsOf: url).get()
 
-        if let contents = contents {
             for image in contents.images {
                 let neededSize = image.size
                 let neededScale = image.scale
@@ -803,12 +752,9 @@ class ProcessCommand: Command {
                 image.filename = dstName
             }
 
-            do {
-                let JSONString = contents.toJSONString(prettyPrint: true)
-                try JSONString?.write(toFile: contentsPath, atomically: true, encoding: .utf8)
-            } catch {
-                print("Error in processIconSet: \(error)")
-            }
+            _ = try contents.write(to: url, pretty: true).get()
+        } catch {
+            print("Error in processIconSet: \(error)")
         }
     }
 
@@ -980,7 +926,7 @@ class ProcessCommand: Command {
                             newHeight = Int((Double(srcImage.height) * plan.scale).rounded(.down))
                         }
                     } else {
-                        if plan.boxWidth == 0 && plan.boxHeight == 0 {
+                        if plan.boxWidth == 0, plan.boxHeight == 0 {
                             // no action
                         } else {
                             if plan.boxWidth == 0 {
@@ -1001,7 +947,7 @@ class ProcessCommand: Command {
                             }
                         }
                     }
-                    if newWidth != 0 && newHeight != 0 {
+                    if newWidth != 0, newHeight != 0 {
                         dstImage = scale(image: srcImage, width: newWidth, height: newHeight, processMode: mode)
                     }
                 }

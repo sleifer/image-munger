@@ -7,219 +7,147 @@
 //
 
 import Foundation
-import ObjectMapper
 
-class StickerPackContents: Mappable {
+class StickerPackContents: Codable, JSONReadWrite {
+    typealias HostClass = StickerPackContents
+
     var stickers: [StickerPackContentsSticker] = []
     var info: StickerPackContentsInfo = StickerPackContentsInfo()
     var properties: StickerPackContentsProperties = StickerPackContentsProperties()
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        stickers <- map["stickers"]
-        info <- map["info"]
-        properties <- map["properties"]
-    }
+    init() {}
 }
 
-class StickerPackContentsSticker: Mappable {
+class StickerPackContentsSticker: Codable {
     var filename: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        filename <- map["filename"]
-    }
+    init() {}
 }
 
-class StickerPackContentsInfo: Mappable {
+class StickerPackContentsInfo: Codable {
     var version: Int = 0
     var author: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        version <- map["version"]
-        author <- map["author"]
-    }
+    init() {}
 }
 
-class StickerPackContentsProperties: Mappable {
+class StickerPackContentsProperties: Codable {
     var gridSize: String = ""
 
-    init() {
-    }
+    init() {}
 
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        gridSize <- map["grid-size"]
+    enum CodingKeys: String, CodingKey {
+        case gridSize = "grid-size"
     }
 }
 
-class StickerContents: Mappable {
+class StickerContents: Codable, JSONReadWrite {
+    typealias HostClass = StickerContents
+
     var info: StickerContentsInfo = StickerContentsInfo()
     var properties: StickerContentsProperties = StickerContentsProperties()
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        info <- map["info"]
-        properties <- map["properties"]
-    }
+    init() {}
 }
 
-class StickerContentsInfo: Mappable {
+class StickerContentsInfo: Codable {
     var version: Int = 0
     var author: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        version <- map["version"]
-        author <- map["author"]
-    }
+    init() {}
 }
 
-class StickerContentsProperties: Mappable {
+class StickerContentsProperties: Codable {
     var filename: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        filename <- map["filename"]
-    }
+    init() {}
 }
 
-class CatalogContents: Mappable {
+class CatalogContents: Codable, JSONReadWrite {
+    typealias HostClass = CatalogContents
+
     var info: CatalogContentsInfo = CatalogContentsInfo()
     var properties: CatalogContentsProperties = CatalogContentsProperties()
     var isFolder: Bool = false
 
-    init() {
+    init() {}
+
+    enum CodingKeys: CodingKey {
+        case info
+        case properties
     }
 
-    required init?(map: Map) {
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        info = try container.decode(CatalogContentsInfo.self, forKey: .info)
+        properties = try container.decodeIfPresent(CatalogContentsProperties.self, forKey: .properties) ?? CatalogContentsProperties()
+        isFolder = container.contains(.properties)
     }
 
-    func mapping(map: Map) {
-        info <- map["info"]
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(info, forKey: .info)
         if isFolder == true {
-            properties <- map["properties"]
+            try container.encode(properties, forKey: .properties)
         }
     }
 }
 
-class CatalogContentsInfo: Mappable {
+class CatalogContentsInfo: Codable {
     var version: Int = 0
     var author: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        version <- map["version"]
-        author <- map["author"]
-    }
+    init() {}
 }
 
-class CatalogContentsProperties: Mappable {
+class CatalogContentsProperties: Codable {
     var providesNamespace: Bool = false
     var onDemandResourceTags: [String] = []
 
-    init() {
+    init() {}
+
+    enum CodingKeys: String, CodingKey {
+        case providesNamespace = "provides-namespace"
+        case onDemandResourceTags = "on-demand-resource-tags"
     }
 
-    required init?(map: Map) {
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        providesNamespace = try container.decode(Bool.self, forKey: .providesNamespace)
+        onDemandResourceTags = try container.decodeIfPresent([String].self, forKey: .onDemandResourceTags) ?? []
     }
 
-    func mapping(map: Map) {
-        providesNamespace <- map["provides-namespace"]
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(providesNamespace, forKey: .providesNamespace)
         if onDemandResourceTags.count > 0 {
-            onDemandResourceTags <- map["on-demand-resource-tags"]
+            try container.encode(onDemandResourceTags, forKey: .onDemandResourceTags)
         }
     }
 }
 
-class ImageSetContents: Mappable {
+class ImageSetContents: Codable, JSONReadWrite {
+    typealias HostClass = ImageSetContents
+
     var images: [ImageSetContentsImage] = []
     var info: ImageSetContentsInfo = ImageSetContentsInfo()
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        images <- map["images"]
-        info <- map["info"]
-    }
+    init() {}
 }
 
-class ImageSetContentsImage: Mappable {
+class ImageSetContentsImage: Codable {
     var filename: String?
     var idiom: String?
     var scale: String?
     var platform: String?
     var size: String?
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        filename <- map["filename", ignoreNil: true]
-        idiom <- map["idiom", ignoreNil: true]
-        scale <- map["scale", ignoreNil: true]
-        platform <- map["platform", ignoreNil: true]
-        size <- map["size", ignoreNil: true]
-    }
+    init() {}
 }
 
-class ImageSetContentsInfo: Mappable {
+class ImageSetContentsInfo: Codable {
     var version: Int = 0
     var author: String = ""
 
-    init() {
-    }
-
-    required init?(map: Map) {
-    }
-
-    func mapping(map: Map) {
-        version <- map["version"]
-        author <- map["author"]
-    }
+    init() {}
 }
