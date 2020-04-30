@@ -8,6 +8,7 @@
 
 import CommandLineCore
 import Foundation
+import AppKit
 
 enum ProcessError: Error, LocalizedError {
     case validate(String)
@@ -395,13 +396,18 @@ class ProcessCommand: Command {
         print("Processing \(manifest.files.count) image(s)...")
 
         var outManifest: [String] = []
+        var contactImages: [CGImage]?
+
+        if cfg.outContactSheetPath != nil {
+            contactImages = []
+        }
 
         if manifest.ovalFiles.count == manifest.squareFiles.count, manifest.ovalFiles.count != 0 {
             for idx in 0..<manifest.ovalFiles.count {
                 let ovalPath = cfg.ovalSrcDirPath.appendingPathComponent(manifest.ovalFiles[idx])
                 let squarePath = cfg.squareSrcDirPath.appendingPathComponent(manifest.squareFiles[idx])
                 advanceSegmentIfNeeded()
-                processImage(srcImagePath: squarePath, ovalSrcImagePath: ovalPath)
+                processImage(srcImagePath: squarePath, ovalSrcImagePath: ovalPath, contactImages: &contactImages)
 
                 var name = squarePath.lastPathComponent.changeFileExtension(to: "")
                 name = name.changeFileSuffix(from: "@2x", to: "")
@@ -412,22 +418,65 @@ class ProcessCommand: Command {
             for file in manifest.files {
                 let path = cfg.srcDirPath.appendingPathComponent(file)
                 advanceSegmentIfNeeded()
-                processImage(srcImagePath: path)
+                processImage(srcImagePath: path, contactImages: &contactImages)
 
                 var name = path.lastPathComponent.changeFileExtension(to: "")
                 name = name.changeFileSuffix(from: "@2x", to: "")
                 name = name.changeFileSuffix(from: "@3x", to: "")
                 outManifest.append(name)
             }
-        }
+            }
 
-        if let path = cfg.outManifestPath {
+            if let path = cfg.outContactSheetPath, let images = contactImages {
+                makeContactSheet(images: images, path: path)
+            }
+
+            if let path = cfg.outManifestPath {
             do {
                 let data = try JSONSerialization.data(withJSONObject: outManifest, options: [.prettyPrinted])
                 try data.write(to: URL(fileURLWithPath: path))
             } catch {
                 print("Error writing out manifest: \(error)")
             }
+        }
+    }
+
+    func makeContactSheet(images: [CGImage], path: String) {
+        // compute layout and size
+        let count: Int = images.count
+        var xCount: Int = Int(sqrt(Double(count) * 2.0 / 3.0).rounded(.up))
+        let width = max(xCount * 160, 640)
+        xCount = width / 160
+        var yCount: Int = Int((Double(count) / Double(xCount)).rounded(.up))
+        let height = max(yCount * 160, 920)
+
+        let fullRect = CGRect(x: 0, y: 0, width: width, height: height)
+
+        let bytesPerRow = width * 4
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: UInt32(bitmapInfo.rawValue)) else {
+            print("Can't create CGContext. width: \(width), height: \(height), bytes per row: \(bytesPerRow)")
+            return
+        }
+
+        context.clear(fullRect)
+        context.setFillColor(NSColor(calibratedWhite: 55.0/255.0, alpha: 1.0).cgColor)
+        context.fill(fullRect)
+
+        for idx in 0..<count {
+            let image = images[idx]
+            let xOffset = (idx % xCount) * 160
+            let yOffset = height - 160 - (((idx - (idx % xCount)) / xCount) * 160)
+            var srcRect = CGRect(x: 0, y: 0, width: image.width, height: image.height)
+            var dstRect = CGRect(x: xOffset, y: yOffset, width: 160, height: 160)
+            srcRect = aspectFit(src: srcRect, dst: &dstRect)
+
+            context.draw(image, in: srcRect)
+        }
+
+        if let contactImage = context.makeImage() {
+            write(image: contactImage, path: path)
         }
     }
 
@@ -854,7 +903,7 @@ class ProcessCommand: Command {
 
     // swiftlint:disable cyclomatic_complexity
 
-    func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil) {
+    func processImage(srcImagePath: String, ovalSrcImagePath: String? = nil, contactImages: inout [CGImage]?) {
         print("Processing: \(srcImagePath.lastPathComponent)")
 
         var modes: [ProcessMode] = [.normal]
@@ -862,6 +911,7 @@ class ProcessCommand: Command {
             modes.append(.mask)
         }
 
+        var contactImageStored: Bool = false
         for mode in modes {
             var oneTimeDone: Bool = false
             var maxFileSize: Int = 0
@@ -984,8 +1034,16 @@ class ProcessCommand: Command {
 
                     if let image = dstImage {
                         write(image: image, path: dstPath)
+                        if contactImageStored == false {
+                            contactImages?.append(image)
+                        }
+                        contactImageStored = true
                     } else if let image = srcImage {
                         write(image: image, path: dstPath)
+                        if contactImageStored == false {
+                            contactImages?.append(image)
+                        }
+                        contactImageStored = true
                     }
 
                     let fileSize = getSize(of: URL(fileURLWithPath: dstPath))

@@ -83,6 +83,8 @@ class Manifest {
                 }
             case "out-manifest":
                 config.outManifestPath = expandPathSetting(value)
+            case "out-contact-sheet":
+                config.outContactSheetPath = expandPathSetting(value)
             case "out-format":
                 if let theValue = ImageFormat(rawValue: value) {
                     config.outputFormat = theValue

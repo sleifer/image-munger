@@ -107,6 +107,7 @@ class Configuation {
     var masksToo: Bool
     var maxHeight: Int
     var maxWidth: Int
+    var outContactSheetPath: String?
     var outManifestPath: String?
     var outPackageReplace: Bool
     var outputFormat: ImageFormat
@@ -134,6 +135,7 @@ class Configuation {
         masksToo = false
         maxHeight = 0
         maxWidth = 0
+        outContactSheetPath = nil
         outManifestPath = nil
         outPackageReplace = false
         outputFormat = .unchanged
