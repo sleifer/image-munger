@@ -13,6 +13,7 @@ protocol YAMLReadWrite where Self: Codable {
     associatedtype HostClass: Codable
 
     static func read(contentsOf url: URL) -> Result<Self.HostClass, Error>
+    static func multiRead(contentsOf url: URL) -> Result<[Self.HostClass], Error>
     func write(to url: URL) -> Result<Bool, Error>
 }
 
@@ -29,6 +30,23 @@ extension YAMLReadWrite {
             let text = try String(contentsOf: url)
             let decoder = YAMLDecoder()
             let object = try decoder.decode(HostClass.self, from: text)
+            return .success(object)
+        } catch {
+            return .failure(error)
+        }
+    }
+
+    static func multiRead(contentsOf url: URL) -> Result<[Self.HostClass], Error> {
+        if let singleRead = try? read(contentsOf: url).get() {
+            return .success([singleRead])
+        }
+        do {
+            if FileManager.default.fileExists(atPath: url.path) == false {
+                return .failure(YAMLReadWriteError.fileDoesNotExist)
+            }
+            let text = try String(contentsOf: url)
+            let decoder = YAMLDecoder()
+            let object = try decoder.decode([HostClass].self, from: text)
             return .success(object)
         } catch {
             return .failure(error)
