@@ -15,7 +15,7 @@ enum ImageScales {
     case threeX
 }
 
-enum PresetType: String {
+enum PresetType: String, Codable {
     case none
     case smallSticker
     case mediumSticker
@@ -51,7 +51,7 @@ enum PresetType: String {
     }
 }
 
-enum ImageFormat: String {
+enum ImageFormat: String, Codable {
     case unchanged = "unchanged"
     case JPEG = "jpg"
     case PNG = "png"
@@ -86,7 +86,7 @@ enum ImageFormat: String {
     }
 }
 
-enum PackageType: String {
+enum PackageType: String, Codable {
     case none = "none"
     case stickerPack = "stickerpack"
     case imageSet = "imageset"
@@ -96,8 +96,21 @@ enum PackageType: String {
     case catalogFolder = "catalogfolder"
 }
 
-class Configuation {
-    var backgroundColor: NSColor?
+struct Color: Codable {
+    var red: CGFloat
+    var green: CGFloat
+    var blue: CGFloat
+    var alpha: CGFloat?
+
+    var nsColor: NSColor {
+        return NSColor(red: red, green: green, blue: blue, alpha: alpha ?? 1)
+    }
+}
+
+class Configuation: Codable, YAMLReadWrite {
+    typealias HostClass = Configuation
+
+    var backgroundColor: Color?
     var catalogFolderMaxSize: Int
     var catalogFolderNamespace: Bool
     var catalogFolderTag: String?

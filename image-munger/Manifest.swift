@@ -73,9 +73,9 @@ class Manifest {
                     return CGFloat(Double(item.trimmed()) ?? 0)
                 }
                 if parts.count == 3 {
-                    config.backgroundColor = NSColor(deviceRed: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0, alpha: 1.0)
+                    config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0)
                 } else if parts.count == 4 {
-                    config.backgroundColor = NSColor(deviceRed: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0, alpha: parts[3] / 255.0)
+                    config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0, alpha: parts[3] / 255.0)
                 }
             case "valid-format":
                 config.validExtensions = value.components(separatedBy: ":").map { (item) -> String in

@@ -20,6 +20,7 @@
 		DB6401AC22E38CA800CEEBB5 /* CGRect-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */; };
 		DB994DEC22E0E3A500E29EEC /* homoidentus-test-only.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = DB994DEB22E0E3A500E29EEC /* homoidentus-test-only.xctestplan */; };
 		DBC21E91245EFDB90028C4F7 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = DBC21E90245EFDB90028C4F7 /* Yams */; };
+		DBC21E93245F00290028C4F7 /* YAMLReadWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC21E92245F00290028C4F7 /* YAMLReadWrite.swift */; };
 		DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
 		DBCB90562134402000CB3B04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
 		DBDD18312136D27500C84FF0 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDD18302136D27500C84FF0 /* Plan.swift */; };
@@ -56,6 +57,7 @@
 		DBB2006121389DC500519BC3 /* testing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = testing; sourceTree = "<group>"; };
 		DBB9B43A2142A3CC00078E5A /* libObjectMapper.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libObjectMapper.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBC21E8F245EFDB00028C4F7 /* Yams */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Yams; path = submodules/Yams; sourceTree = "<group>"; };
+		DBC21E92245F00290028C4F7 /* YAMLReadWrite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YAMLReadWrite.swift; sourceTree = "<group>"; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		DBCB90552134402000CB3B04 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				DBE2DA2B2130CCD00056C931 /* CommandHandlers */,
 				DBCB90552134402000CB3B04 /* Configuration.swift */,
 				DB22771A2408ABF4002C1D8D /* JSONReadWrite.swift */,
+				DBC21E92245F00290028C4F7 /* YAMLReadWrite.swift */,
 				DBE2DA202130CA160056C931 /* main.swift */,
 				DBCB90522133662C00CB3B04 /* Manifest.swift */,
 				DB1BCFDF21397C68006F3D04 /* Mappings.swift */,
@@ -305,6 +308,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBC21E93245F00290028C4F7 /* YAMLReadWrite.swift in Sources */,
 				DB1BCFE021397C68006F3D04 /* Mappings.swift in Sources */,
 				DB22771B2408ABF4002C1D8D /* JSONReadWrite.swift in Sources */,
 				DBCB90562134402000CB3B04 /* Configuration.swift in Sources */,

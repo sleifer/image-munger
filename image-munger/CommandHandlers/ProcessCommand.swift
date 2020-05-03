@@ -567,7 +567,7 @@ class ProcessCommand: Command {
 
             context.clear(fullRect)
             if let color = manifest.configuration.backgroundColor {
-                context.setFillColor(color.cgColor)
+                context.setFillColor(color.nsColor.cgColor)
                 context.fill(fullRect)
             }
             context.draw(image, in: srcRect)
