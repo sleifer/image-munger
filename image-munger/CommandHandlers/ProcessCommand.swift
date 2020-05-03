@@ -447,7 +447,7 @@ class ProcessCommand: Command {
         var xCount: Int = Int(sqrt(Double(count) * 2.0 / 3.0).rounded(.up))
         let width = max(xCount * 160, 640)
         xCount = width / 160
-        var yCount: Int = Int((Double(count) / Double(xCount)).rounded(.up))
+        let yCount: Int = Int((Double(count) / Double(xCount)).rounded(.up))
         let height = max(yCount * 160, 920)
 
         let fullRect = CGRect(x: 0, y: 0, width: width, height: height)
