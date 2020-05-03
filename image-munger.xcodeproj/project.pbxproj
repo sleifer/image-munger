@@ -19,6 +19,7 @@
 		DB6401AB22E3831400CEEBB5 /* CGRect-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */; };
 		DB6401AC22E38CA800CEEBB5 /* CGRect-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6401AA22E3831400CEEBB5 /* CGRect-Extension.swift */; };
 		DB994DEC22E0E3A500E29EEC /* homoidentus-test-only.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = DB994DEB22E0E3A500E29EEC /* homoidentus-test-only.xctestplan */; };
+		DBC21E91245EFDB90028C4F7 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = DBC21E90245EFDB90028C4F7 /* Yams */; };
 		DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
 		DBCB90562134402000CB3B04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
 		DBDD18312136D27500C84FF0 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDD18302136D27500C84FF0 /* Plan.swift */; };
@@ -54,6 +55,7 @@
 		DB994DEB22E0E3A500E29EEC /* homoidentus-test-only.xctestplan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "homoidentus-test-only.xctestplan"; sourceTree = "<group>"; };
 		DBB2006121389DC500519BC3 /* testing */ = {isa = PBXFileReference; lastKnownFileType = folder; path = testing; sourceTree = "<group>"; };
 		DBB9B43A2142A3CC00078E5A /* libObjectMapper.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libObjectMapper.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		DBC21E8F245EFDB00028C4F7 /* Yams */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Yams; path = submodules/Yams; sourceTree = "<group>"; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		DBCB90552134402000CB3B04 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBC21E91245EFDB90028C4F7 /* Yams in Frameworks */,
 				DBF771F823FEEFB8000B4A22 /* CommandLineCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -108,6 +111,7 @@
 				DBCB904F213316D000CB3B04 /* .swiftlint.yml */,
 				DBB2006121389DC500519BC3 /* testing */,
 				DBF771F523FEEFAC000B4A22 /* CommandLineCore */,
+				DBC21E8F245EFDB00028C4F7 /* Yams */,
 				DBE2DA1F2130CA160056C931 /* image-munger */,
 				DB1BCF8621396CDB006F3D04 /* ImageMungerTests */,
 				DBE2DA1E2130CA160056C931 /* Products */,
@@ -196,6 +200,7 @@
 			name = "image-munger";
 			packageProductDependencies = (
 				DBF771F723FEEFB8000B4A22 /* CommandLineCore */,
+				DBC21E90245EFDB90028C4F7 /* Yams */,
 			);
 			productName = "image-munger";
 			productReference = DBE2DA1D2130CA160056C931 /* imp */;
@@ -519,6 +524,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		DBC21E90245EFDB90028C4F7 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Yams;
+		};
 		DBECE74E244C8D5900F0A2E9 /* CommandLineCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CommandLineCore;

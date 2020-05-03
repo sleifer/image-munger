@@ -1,3 +1,6 @@
 [submodule "submodules/CommandLineCore"]
 	path = submodules/CommandLineCore
 	url = git@github.com:sleifer/CommandLineCore.git
+[submodule "submodules/Yams"]
+	path = submodules/Yams
+	url = git@github.com:jpsim/Yams.git

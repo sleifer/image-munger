@@ -1,4 +1,5 @@
 CommandLineCore ~> 1.6
+Yams ~> 3.0
 
 // Submodule name (space) <test> (space) version
 // Tests:
