@@ -13,7 +13,7 @@ import AppKit
 class Manifest {
     var manifestPath: String
     var outputDir: String
-    var settings: [String: String]
+    var settings: ManifestFile
     var files: [String]
     var ovalFiles: [String]
     var squareFiles: [String]
@@ -25,17 +25,17 @@ class Manifest {
     init() {
         self.manifestPath = ""
         self.outputDir = ""
-        settings = [:]
+        settings = ManifestFile()
         files = []
         ovalFiles = []
         squareFiles = []
     }
 
-    init(path: String, outputDir: String) {
+    init(path: String, outputDir: String, manifestFile: ManifestFile) {
         self.manifestPath = CommandCore.core!.baseSubPath(path)
         self.outputDir = CommandCore.core!.baseSubPath(outputDir)
-        settings = [:]
-        files = []
+        settings = manifestFile
+        files = settings.files ?? []
         ovalFiles = []
         squareFiles = []
     }
@@ -54,79 +54,94 @@ class Manifest {
 
     func makeConfiguration() -> Configuation {
         let config = Configuation()
-        for (key, value) in settings {
-            switch key {
-            case "src":
-                config.srcDirPath = expandPathSetting(value)
-            case "src-oval":
-                config.ovalSrcDirPath = expandPathSetting(value)
-            case "src-square":
-                config.squareSrcDirPath = expandPathSetting(value)
-            case "dst":
-                config.dstDirPath = expandPathSetting(value)
-            case "preset":
-                if let theValue = PresetType(rawValue: value) {
-                    config.preset = theValue
-                }
-            case "background-color":
-                let parts = value.components(separatedBy: ":").map { (item) -> CGFloat in
-                    return CGFloat(Double(item.trimmed()) ?? 0)
-                }
-                if parts.count == 3 {
-                    config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0)
-                } else if parts.count == 4 {
-                    config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0, alpha: parts[3] / 255.0)
-                }
-            case "valid-format":
-                config.validExtensions = value.components(separatedBy: ":").map { (item) -> String in
-                    return item.trimmed()
-                }
-            case "out-manifest":
-                config.outManifestPath = expandPathSetting(value)
-            case "out-contact-sheet":
-                config.outContactSheetPath = expandPathSetting(value)
-            case "out-format":
-                if let theValue = ImageFormat(rawValue: value) {
-                    config.outputFormat = theValue
-                }
-            case "out-package":
-                if let theValue = PackageType(rawValue: value) {
-                    config.outputPackage = theValue
-                }
-            case "masks-too":
-                if value.lowercased() == "true" || Int(value) != 0 {
-                    config.masksToo = true
-                } else {
-                    config.masksToo = false
-                }
-            case "out-package-replace":
-                if value.lowercased() == "true" || Int(value) != 0 {
-                    config.outPackageReplace = true
-                } else {
-                    config.outPackageReplace = false
-                }
-            case "catalog-folder-namespace":
-                if value.lowercased() == "true" || Int(value) != 0 {
-                    config.catalogFolderNamespace = true
-                } else {
-                    config.catalogFolderNamespace = false
-                }
-            case "catalog-folder-tag":
-                config.catalogFolderTag = value
-            case "catalogfolder-max-size":
-                config.catalogFolderMaxSize = Int(value) ?? 0
-            case "scale":
-                config.scale = Double(value) ?? 0.0
-            case "max-px":
-                config.maxWidth = Int(value) ?? 0
-                config.maxHeight = config.maxWidth
-            case "max-width-px":
-                config.maxWidth = Int(value) ?? 0
-            case "max-height-px":
-                config.maxHeight = Int(value) ?? 0
-            default:
-                break
+
+        if let value = settings.src {
+            config.srcDirPath = expandPathSetting(value)
+        }
+        if let value = settings.srcOval {
+            config.ovalSrcDirPath = expandPathSetting(value)
+        }
+        if let value = settings.srcSquare {
+            config.squareSrcDirPath = expandPathSetting(value)
+        }
+        if let value = settings.dst {
+            config.dstDirPath = expandPathSetting(value)
+        }
+        if let value = settings.preset {
+            if let theValue = PresetType(rawValue: value) {
+                config.preset = theValue
             }
+        }
+        if let value = settings.backgroundColor {
+            let parts = value.components(separatedBy: ":").map { (item) -> CGFloat in
+                return CGFloat(Double(item.trimmed()) ?? 0)
+            }
+            if parts.count == 3 {
+                config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0)
+            } else if parts.count == 4 {
+                config.backgroundColor = Color(red: parts[0] / 255.0, green: parts[1] / 255.0, blue: parts[2] / 255.0, alpha: parts[3] / 255.0)
+            }
+        }
+        if let value = settings.validFormat {
+            config.validExtensions = value.components(separatedBy: ":").map { (item) -> String in
+                return item.trimmed()
+            }
+        }
+        if let value = settings.outManifest {
+            config.outManifestPath = expandPathSetting(value)
+        }
+        if let value = settings.outContactSheet {
+            config.outContactSheetPath = expandPathSetting(value)
+        }
+        if let value = settings.outFormat {
+            if let theValue = ImageFormat(rawValue: value) {
+                config.outputFormat = theValue
+            }
+        }
+        if let value = settings.outPackage {
+            if let theValue = PackageType(rawValue: value) {
+                config.outputPackage = theValue
+            }
+        }
+        if let value = settings.masksToo {
+            if value.lowercased() == "true" || Int(value) != 0 {
+                config.masksToo = true
+            } else {
+                config.masksToo = false
+            }
+        }
+        if let value = settings.outPackageReplace {
+            if value.lowercased() == "true" || Int(value) != 0 {
+                config.outPackageReplace = true
+            } else {
+                config.outPackageReplace = false
+            }
+        }
+        if let value = settings.catalogFolderNamespace {
+            if value.lowercased() == "true" || Int(value) != 0 {
+                config.catalogFolderNamespace = true
+            } else {
+                config.catalogFolderNamespace = false
+            }
+        }
+        if let value = settings.catalogFolderTag {
+            config.catalogFolderTag = value
+        }
+        if let value = settings.catalogFolderMaxSize {
+            config.catalogFolderMaxSize = Int(value) ?? 0
+        }
+        if let value = settings.scale {
+            config.scale = Double(value) ?? 0.0
+        }
+        if let value = settings.maxPx {
+            config.maxWidth = Int(value) ?? 0
+            config.maxHeight = config.maxWidth
+        }
+        if let value = settings.maxWidthPx {
+            config.maxWidth = Int(value) ?? 0
+        }
+        if let value = settings.maxHeightPx {
+            config.maxHeight = Int(value) ?? 0
         }
         return config
     }

@@ -6,9 +6,9 @@
 //  Copyright © 2018 droolingcat.com. All rights reserved.
 //
 
+import AppKit
 import CommandLineCore
 import Foundation
-import AppKit
 
 enum ProcessError: Error, LocalizedError {
     case validate(String)
@@ -64,8 +64,17 @@ class ProcessCommand: Command {
         var manifests: [Manifest] = []
 
         for manifestPath in cmd.parameters {
-            let additionalManifests = readManifest(manifestPath, outputDir: outputDir)
-            manifests.append(contentsOf: additionalManifests)
+            let result = ManifestFile.multiRead(contentsOf: URL(fileURLWithPath: manifestPath))
+            switch result {
+            case .success(let manifestFiles):
+                let additionalManifests = manifestFiles.map { (entry) -> Manifest in
+                    Manifest(path: manifestPath, outputDir: outputDir, manifestFile: entry)
+                }
+                manifests.append(contentsOf: additionalManifests)
+            case .failure(let error):
+                print(error)
+                return
+            }
         }
 
         print("Read \(manifests.count) configuration(s) from \(cmd.parameters.count) manifest file(s).")
@@ -111,41 +120,6 @@ class ProcessCommand: Command {
         command.requiredParameters.append(parameter)
 
         return command
-    }
-
-    func readManifest(_ path: String, outputDir: String) -> [Manifest] {
-        var manifests: [Manifest] = []
-        var manifest = Manifest(path: path, outputDir: outputDir)
-        do {
-            let fullText = try String(contentsOfFile: path, encoding: .utf8)
-            fullText.enumerateLines { (line: String, _: inout Bool) in
-                if line.count > 0 {
-                    if line.hasPrefix("# ") == true {
-                        // comment, ignore
-                    } else if line.hasPrefix("= ") == true {
-                        // setting
-                        let parts = line.suffix(from: 2).components(separatedBy: ",")
-                        if parts.count == 2 {
-                            let key = parts[0].trimmed()
-                            let value = parts[1].trimmed()
-                            manifest.settings[key] = value
-                        }
-                    } else if line.hasPrefix("--") == true {
-                        // manifest separator
-                        manifests.append(manifest)
-                        manifest = Manifest(path: path, outputDir: outputDir)
-                    } else {
-                        // file
-                        manifest.files.append(line)
-                    }
-                }
-            }
-            manifests.append(manifest)
-        } catch {
-            print("Error loading manifest (\(path)): \(error)")
-        }
-
-        return manifests
     }
 
     func collectFiles(manifest: inout Manifest, group: SourceFileGroup) throws {
@@ -425,13 +399,13 @@ class ProcessCommand: Command {
                 name = name.changeFileSuffix(from: "@3x", to: "")
                 outManifest.append(name)
             }
-            }
+        }
 
-            if let path = cfg.outContactSheetPath, let images = contactImages {
-                makeContactSheet(images: images, path: path)
-            }
+        if let path = cfg.outContactSheetPath, let images = contactImages {
+            makeContactSheet(images: images, path: path)
+        }
 
-            if let path = cfg.outManifestPath {
+        if let path = cfg.outManifestPath {
             do {
                 let data = try JSONSerialization.data(withJSONObject: outManifest, options: [.prettyPrinted])
                 try data.write(to: URL(fileURLWithPath: path))
@@ -461,7 +435,7 @@ class ProcessCommand: Command {
         }
 
         context.clear(fullRect)
-        context.setFillColor(NSColor(calibratedWhite: 55.0/255.0, alpha: 1.0).cgColor)
+        context.setFillColor(NSColor(calibratedWhite: 55.0 / 255.0, alpha: 1.0).cgColor)
         context.fill(fullRect)
 
         for idx in 0..<count {
