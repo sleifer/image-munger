@@ -53,6 +53,7 @@ extension YAMLReadWrite {
         }
     }
 
+    @discardableResult
     func write(to url: URL) -> Result<Bool, Error> {
         do {
             let encoder = YAMLEncoder()

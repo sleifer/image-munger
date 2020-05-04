@@ -22,6 +22,7 @@
 		DBC21E91245EFDB90028C4F7 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = DBC21E90245EFDB90028C4F7 /* Yams */; };
 		DBC21E93245F00290028C4F7 /* YAMLReadWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC21E92245F00290028C4F7 /* YAMLReadWrite.swift */; };
 		DBC21E95245F70670028C4F7 /* ManifestFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC21E94245F70670028C4F7 /* ManifestFile.swift */; };
+		DBC21E97245FB00F0028C4F7 /* SampleManifestCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC21E96245FB00F0028C4F7 /* SampleManifestCommand.swift */; };
 		DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90522133662C00CB3B04 /* Manifest.swift */; };
 		DBCB90562134402000CB3B04 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBCB90552134402000CB3B04 /* Configuration.swift */; };
 		DBDD18312136D27500C84FF0 /* Plan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDD18302136D27500C84FF0 /* Plan.swift */; };
@@ -60,6 +61,7 @@
 		DBC21E8F245EFDB00028C4F7 /* Yams */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Yams; path = submodules/Yams; sourceTree = "<group>"; };
 		DBC21E92245F00290028C4F7 /* YAMLReadWrite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YAMLReadWrite.swift; sourceTree = "<group>"; };
 		DBC21E94245F70670028C4F7 /* ManifestFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestFile.swift; sourceTree = "<group>"; };
+		DBC21E96245FB00F0028C4F7 /* SampleManifestCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleManifestCommand.swift; sourceTree = "<group>"; };
 		DBCB904F213316D000CB3B04 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftlint.yml; sourceTree = "<group>"; };
 		DBCB90522133662C00CB3B04 /* Manifest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manifest.swift; sourceTree = "<group>"; };
 		DBCB90552134402000CB3B04 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				DBE2DA2F213186EB0056C931 /* ProcessCommand.swift */,
+				DBC21E96245FB00F0028C4F7 /* SampleManifestCommand.swift */,
 			);
 			path = CommandHandlers;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 				DB22771B2408ABF4002C1D8D /* JSONReadWrite.swift in Sources */,
 				DBCB90562134402000CB3B04 /* Configuration.swift in Sources */,
 				DBDD18312136D27500C84FF0 /* Plan.swift in Sources */,
+				DBC21E97245FB00F0028C4F7 /* SampleManifestCommand.swift in Sources */,
 				DBE2DA212130CA160056C931 /* main.swift in Sources */,
 				DB6401AB22E3831400CEEBB5 /* CGRect-Extension.swift in Sources */,
 				DBCB90532133662C00CB3B04 /* Manifest.swift in Sources */,

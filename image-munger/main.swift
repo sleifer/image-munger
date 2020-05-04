@@ -22,6 +22,7 @@ func main() {
     core.set(defaultCommand: "process")
 
     core.add(command: ProcessCommand.self)
+    core.add(command: SampleManifestCommand.self)
 
     #if DEBUG
     // for testing in Xcode
