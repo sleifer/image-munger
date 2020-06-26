@@ -903,9 +903,11 @@ class ProcessCommand: Command {
                         break
                     case .iconSet:
                         processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
+                        sizePassed = true
                         continue
                     case .icns:
                         processIcns(srcImagePath: srcImagePath, plan: plan)
+                        sizePassed = true
                         continue
                     case .catalog:
                         break

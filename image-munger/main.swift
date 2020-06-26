@@ -12,7 +12,7 @@ import CommandLineCore
 func main() {
     #if DEBUG
     // for testing in Xcode
-    let path = "~/Documents/Clients/zenspirations/remembrance-mojis-app".expandingTildeInPath
+    let path = "~/Documents/Code/PoolCareLog".expandingTildeInPath
     FileManager.default.changeCurrentDirectoryPath(path)
     #endif
 
@@ -26,7 +26,7 @@ func main() {
 
     #if DEBUG
     // for testing in Xcode
-    let args = ["imp", "appicon-manifest.txt"]
+    let args = ["imp", "appicon-manifest.yml"]
     #else
     let args = CommandLine.arguments
     #endif
