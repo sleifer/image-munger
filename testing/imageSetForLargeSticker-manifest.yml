@@ -1,0 +1,10 @@
+# Test Preset imageSetForLargeSticker
+src: ~~
+dst: ~~~/imageSetForLargeSticker.xcassets
+preset: imageSetForLargeSticker
+outManifest: ~~~/imageSetForLargeSticker.json
+outPackage: catalog
+outPackageReplace: true
+files:
+- moon.jpg
+- shuttle.png

@@ -1,6 +1,0 @@
-# Test Preset thumb256
-= src,~~
-= dst,~~~/thumb256
-= preset,thumb256
-moon.jpg
-shuttle.png

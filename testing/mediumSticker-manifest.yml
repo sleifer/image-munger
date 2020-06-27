@@ -1,0 +1,9 @@
+# Test Preset mediumSticker
+src: ~~
+dst: ~~~/mediumSticker.xcstickers/Sticker Pack.stickerpack
+preset: mediumSticker
+outPackage: stickerpack
+outPackageReplace: true
+files:
+- moon.jpg
+- shuttle.png

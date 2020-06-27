@@ -1,0 +1,34 @@
+# Test compound manifest to generate all homoidentus images
+- src: ~~
+  dst: ~~~/homoidentus.xcassets/catalog
+  preset: imageSet
+  maxPx: 1704
+  outFormat: jpg
+  outPackage: catalogfolder
+  masksToo: true
+  catalogfolderMaxSize: 1000
+  catalogFolderNamespace: true
+  catalogFolderTag: catalog
+  outPackageReplace: true
+  files:
+  - moon.jpg
+  - shuttle.png
+- src: ~~
+  dst: ~~~/homoidentus.xcassets/thumbnail
+  preset: imageSet
+  maxPx: 300
+  outFormat: jpg
+  masksToo: true
+  outPackage: catalogfolder
+  catalogFolderNamespace: true
+  outPackageReplace: true
+  files:
+  - moon.jpg
+  - shuttle.png
+- src: ~~
+  dst: ~~~/sticker_media
+  preset: mediumSticker
+  outPackageReplace: true
+  files:
+  - moon.jpg
+  - shuttle.png

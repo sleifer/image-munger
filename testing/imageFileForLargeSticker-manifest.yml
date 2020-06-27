@@ -1,0 +1,8 @@
+# Test Preset imageFileForLargeSticker
+src: ~~
+dst: ~~~/stickerFiles
+preset: imageFileForLargeSticker
+outPackageReplace: true
+files:
+- moon.jpg
+- shuttle.png

@@ -1,0 +1,5 @@
+# Test icon set (messages)
+src: ~~/moon.jpg
+dst: ~~~/iconset.xcstickers/Messages Icon.stickersiconset
+outFormat: png
+outPackage: iconset

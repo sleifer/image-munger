@@ -1,0 +1,10 @@
+# Test Preset largeSticker
+src: ~~
+dst: ~~~/largeSticker.xcstickers/Sticker Pack.stickerpack
+preset: largeSticker
+outPackage: stickerpack
+outPackageReplace: true
+files:
+- moon.jpg
+- shuttle.png
+- oversize.png

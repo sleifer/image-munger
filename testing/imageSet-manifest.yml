@@ -1,0 +1,9 @@
+# Test Preset imageSet
+src: ~~
+dst: ~~~/imageset.xcassets
+preset: imageSet
+outManifest: ~~~/imageset.json
+outPackage: imageset
+outPackageReplace: true
+files:
+- moon@3x.png

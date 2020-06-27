@@ -1,0 +1,5 @@
+# Test icon set (app)
+src: ~~/moon.jpg
+dst: ~~~/iconset.xcassets/AppIcon.appiconset
+outFormat: png
+outPackage: iconset

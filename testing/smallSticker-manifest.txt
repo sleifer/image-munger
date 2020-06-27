@@ -1,8 +1,0 @@
-# Test Preset smallSticker
-= src,~~
-= dst,~~~/smallSticker.xcstickers/Sticker Pack.stickerpack
-= preset,smallSticker
-= out-package, stickerpack
-= out-package-replace, true
-moon.jpg
-shuttle.png

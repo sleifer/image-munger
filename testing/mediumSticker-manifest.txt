@@ -1,8 +1,0 @@
-# Test Preset mediumSticker
-= src,~~
-= dst,~~~/mediumSticker.xcstickers/Sticker Pack.stickerpack
-= preset,mediumSticker
-= out-package, stickerpack
-= out-package-replace, true
-moon.jpg
-shuttle.png

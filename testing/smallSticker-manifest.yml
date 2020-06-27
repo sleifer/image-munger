@@ -1,0 +1,9 @@
+# Test Preset smallSticker
+src: ~~
+dst: ~~~/smallSticker.xcstickers/Sticker Pack.stickerpack
+preset: smallSticker
+outPackage: stickerpack
+outPackageReplace: true
+files:
+- moon.jpg
+- shuttle.png

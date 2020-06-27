@@ -1,5 +1,0 @@
-# Test icon set (app)
-= src,~~/moon.jpg
-= dst,~~~/iconset.xcassets/AppIcon.appiconset
-= out-format, png
-= out-package, iconset

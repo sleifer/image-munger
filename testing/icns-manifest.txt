@@ -1,5 +1,0 @@
-# Test icns
-= src,~~/moon.jpg
-= dst,~~~/icon.icns
-= out-format, png
-= out-package, icns

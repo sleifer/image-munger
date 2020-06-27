@@ -1,8 +1,0 @@
-# Test Preset imageSet
-= src,~~
-= dst,~~~/imageset.xcassets
-= preset,imageSet
-= out-manifest,~~~/imageset.json
-= out-package, imageset
-= out-package-replace, true
-moon@3x.png
