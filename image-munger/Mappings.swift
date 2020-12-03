@@ -141,6 +141,8 @@ class ImageSetContentsImage: Codable {
     var scale: String?
     var platform: String?
     var size: String?
+    var role: String?
+    var subtype: String?
 
     init() {}
 }
