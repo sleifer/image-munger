@@ -791,8 +791,6 @@ class ProcessCommand: Command {
         }
     }
 
-    // swiftlint:enable cyclomatic_complexity
-
     func processGenericIconSet(srcImagePath: String, plan: Plan) {
         let dstFolderPath = catalogFolderSegmentPath
 
@@ -827,7 +825,7 @@ class ProcessCommand: Command {
                 dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
             }
 
-            var newSuffix = "\(neededWidth)x\(neededHeight)"
+            var newSuffix = "\(onePlan.boxWidth)x\(onePlan.boxHeight)"
             if onePlan.scale == 2.0 {
                 newSuffix += "@2x"
             }
@@ -859,8 +857,6 @@ class ProcessCommand: Command {
             }
         }
     }
-
-    // swiftlint:disable cyclomatic_complexity
 
     // swiftlint:enable cyclomatic_complexity
 
