@@ -41,7 +41,7 @@ enum ScaleMode {
 }
 
 class ProcessCommand: Command {
-    var manifest: Manifest = Manifest()
+    var manifest: Manifest = .init()
     var catalogFolderSegmentMaxSize: Int = 0
     var catalogFolderSegmentIndex: Int = 0
     var catalogFolderSegmentAccumulatedSize: Int = 0
@@ -67,7 +67,7 @@ class ProcessCommand: Command {
             let result = ManifestFile.multiRead(contentsOf: URL(fileURLWithPath: manifestPath))
             switch result {
             case .success(let manifestFiles):
-                let additionalManifests = manifestFiles.map { (entry) -> Manifest in
+                let additionalManifests = manifestFiles.map { entry -> Manifest in
                     Manifest(path: manifestPath, outputDir: outputDir, manifestFile: entry)
                 }
                 manifests.append(contentsOf: additionalManifests)
@@ -214,7 +214,7 @@ class ProcessCommand: Command {
     }
 
     func clearSplitCatalogs(folder: String) {
-        var idx: Int = 0
+        var idx = 0
         while true {
             let path = "\(folder)_\(idx)"
             if FileManager.default.fileExists(atPath: path) == true {
@@ -308,8 +308,8 @@ class ProcessCommand: Command {
             // no pre-action
             break
         case .iconSet:
-            if cfg.dstDirPath.hasSuffix(".appiconset") == false, cfg.dstDirPath.hasSuffix(".stickersiconset") == false {
-                print("\(cfg.dstDirPath) is not a .appiconset or .stickersiconset directory.")
+            if cfg.dstDirPath.hasSuffix(".iconset") == false, cfg.dstDirPath.hasSuffix(".appiconset") == false, cfg.dstDirPath.hasSuffix(".stickersiconset") == false {
+                print("\(cfg.dstDirPath) is not a .iconset, .appiconset, or .stickersiconset directory.")
                 return
             }
             if manifest.files.count != 1, manifest.ovalFiles.count == 0, manifest.squareFiles.count == 0 {
@@ -340,7 +340,7 @@ class ProcessCommand: Command {
                 clearCatalog(folder: cfg.dstDirPath)
             }
         case .catalogFolder:
-            let assetParts = cfg.dstDirPath.components(separatedBy: "/").filter { (component) -> Bool in
+            let assetParts = cfg.dstDirPath.components(separatedBy: "/").filter { component -> Bool in
                 if component.hasSuffix(".xcassets") == true {
                     return true
                 }
@@ -418,10 +418,10 @@ class ProcessCommand: Command {
     func makeContactSheet(images: [CGImage], path: String) {
         // compute layout and size
         let count: Int = images.count
-        var xCount: Int = Int(sqrt(Double(count) * 2.0 / 3.0).rounded(.up))
+        var xCount = Int(sqrt(Double(count) * 2.0 / 3.0).rounded(.up))
         let width = max(xCount * 160, 640)
         xCount = width / 160
-        let yCount: Int = Int((Double(count) / Double(xCount)).rounded(.up))
+        let yCount = Int((Double(count) / Double(xCount)).rounded(.up))
         let height = max(yCount * 160, 920)
 
         let fullRect = CGRect(x: 0, y: 0, width: width, height: height)
@@ -793,6 +793,77 @@ class ProcessCommand: Command {
 
     // swiftlint:enable cyclomatic_complexity
 
+    func processGenericIconSet(srcImagePath: String, plan: Plan) {
+        let dstFolderPath = catalogFolderSegmentPath
+
+        var plans: [Plan] = []
+        plans.append(Plan(scale: 1, boxWidth: 16, boxHeight: 16))
+        plans.append(Plan(scale: 2, boxWidth: 16, boxHeight: 16))
+        plans.append(Plan(scale: 1, boxWidth: 32, boxHeight: 32))
+        plans.append(Plan(scale: 2, boxWidth: 32, boxHeight: 32))
+        plans.append(Plan(scale: 1, boxWidth: 128, boxHeight: 128))
+        plans.append(Plan(scale: 2, boxWidth: 128, boxHeight: 128))
+        plans.append(Plan(scale: 1, boxWidth: 256, boxHeight: 256))
+        plans.append(Plan(scale: 2, boxWidth: 256, boxHeight: 256))
+        plans.append(Plan(scale: 1, boxWidth: 512, boxHeight: 512))
+        plans.append(Plan(scale: 2, boxWidth: 512, boxHeight: 512))
+
+        for onePlan in plans {
+            let neededWidth = Int(onePlan.scale * Double(onePlan.boxWidth))
+            let neededHeight = Int(onePlan.scale * Double(onePlan.boxHeight))
+
+            if let reqSuffix = plan.requiredSuffix, srcImagePath.hasFileSuffix(reqSuffix) == false {
+                print("\(srcImagePath) does not have the required suffix: \(reqSuffix)")
+                return
+            }
+
+            var dstName = "icon_".appendingPathExtension(srcImagePath.pathExtension) ?? "icon_"
+
+            if ImageFormat.formatForPath(srcImagePath) == .unchanged {
+                print("\(srcImagePath) has an unsupported source format.")
+                continue
+            }
+            if plan.outputFormat != .unchanged {
+                dstName = dstName.changeFileExtension(from: dstName.pathExtension, to: plan.outputFormat.rawValue)
+            }
+
+            var newSuffix = "\(neededWidth)x\(neededHeight)"
+            if onePlan.scale == 2.0 {
+                newSuffix += "@2x"
+            }
+            dstName = dstName.changeFileSuffix(from: "", to: newSuffix)
+            let dstPath = dstFolderPath.appendingPathComponent(dstName)
+
+            let srcImageUrl = URL(fileURLWithPath: srcImagePath)
+            let srcImageSource = CGImageSourceCreateWithURL(srcImageUrl as CFURL, nil)
+            var srcImage: CGImage?
+            if let srcImageSource = srcImageSource {
+                srcImage = CGImageSourceCreateImageAtIndex(srcImageSource, 0, nil)
+            }
+
+            if srcImage == nil {
+                print("Failed to load image \(srcImagePath).")
+                continue
+            }
+
+            var dstImage: CGImage?
+
+            if let srcImage = srcImage {
+                dstImage = scale(image: srcImage, width: neededWidth, height: neededHeight, scaleMode: .fill)
+            }
+
+            if let image = dstImage {
+                write(image: image, path: dstPath)
+            } else if let image = srcImage {
+                write(image: image, path: dstPath)
+            }
+        }
+    }
+
+    // swiftlint:disable cyclomatic_complexity
+
+    // swiftlint:enable cyclomatic_complexity
+
     func processIcns(srcImagePath: String, plan: Plan) {
         let dstFilePath = catalogFolderSegmentPath
         let dstFolderPath = dstFilePath.changeFileExtension(to: "iconset")
@@ -885,14 +956,14 @@ class ProcessCommand: Command {
             modes.append(.mask)
         }
 
-        var contactImageStored: Bool = false
+        var contactImageStored = false
         for mode in modes {
-            var oneTimeDone: Bool = false
-            var maxFileSize: Int = 0
+            var oneTimeDone = false
+            var maxFileSize = 0
 
             for plan in manifest.configuration.plans {
                 var srcPadPercent: Double = 0
-                var sizePassed: Bool = false
+                var sizePassed = false
                 repeat {
                     switch manifest.configuration.outputPackage {
                     case .none:
@@ -902,7 +973,11 @@ class ProcessCommand: Command {
                     case .imageSet:
                         break
                     case .iconSet:
-                        processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
+                        if manifest.configuration.dstDirPath.hasSuffix(".iconset") {
+                            processGenericIconSet(srcImagePath: srcImagePath, plan: plan)
+                        } else {
+                            processIconSet(srcImagePath: srcImagePath, ovalSrcImagePath: ovalSrcImagePath, plan: plan)
+                        }
                         sizePassed = true
                         continue
                     case .icns:
@@ -955,8 +1030,8 @@ class ProcessCommand: Command {
                     }
 
                     var dstImage: CGImage?
-                    var newWidth: Int = 0
-                    var newHeight: Int = 0
+                    var newWidth = 0
+                    var newHeight = 0
 
                     if let srcImage = srcImage {
                         if plan.scale != 0 {
@@ -979,7 +1054,7 @@ class ProcessCommand: Command {
                                     newHeight = plan.boxHeight
                                 }
                                 if plan.aspectWithMaxBox == true {
-                                    var dstSize: CGSize = CGSize(width: newWidth, height: newHeight)
+                                    var dstSize: CGSize = .init(width: newWidth, height: newHeight)
                                     let fit = aspectFit(src: CGSize(width: srcImage.width, height: srcImage.height), dst: &dstSize)
                                     newWidth = Int(fit.width)
                                     newHeight = Int(fit.height)
@@ -1047,7 +1122,7 @@ class ProcessCommand: Command {
     // swiftlint:enable cyclomatic_complexity
 
     func getSize(of url: URL) -> Int {
-        var fileSize: Int = 0
+        var fileSize = 0
 
         let keys: Set<URLResourceKey> = [URLResourceKey.fileSizeKey]
         do {
