@@ -22,6 +22,7 @@
 		DBB6F52F24A8D452008B2AAF /* Mappings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB6F52524A8D452008B2AAF /* Mappings.swift */; };
 		DBB6F54924A8D55C008B2AAF /* CommandLineCore in Frameworks */ = {isa = PBXBuildFile; productRef = DBB6F54824A8D55C008B2AAF /* CommandLineCore */; };
 		DBB6F54B24A8D55C008B2AAF /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = DBB6F54A24A8D55C008B2AAF /* Yams */; };
+		DBE3869327CC6E48007E2F9C /* WorkingDirectoryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE3869227CC6E48007E2F9C /* WorkingDirectoryHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,6 +71,7 @@
 		DBB6F54224A8D496008B2AAF /* iconSet-messages-manifest.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "iconSet-messages-manifest.yml"; sourceTree = "<group>"; };
 		DBB6F54324A8D496008B2AAF /* oversize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oversize.png; sourceTree = "<group>"; };
 		DBB6F54424A8D496008B2AAF /* homoidentus-manifest.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = "homoidentus-manifest.yml"; sourceTree = "<group>"; };
+		DBE3869227CC6E48007E2F9C /* WorkingDirectoryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkingDirectoryHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				DBB6F51F24A8D452008B2AAF /* JSONReadWrite.swift */,
 				DBB6F51424A8D36B008B2AAF /* main.swift */,
 				DBB6F51E24A8D452008B2AAF /* Manifest.swift */,
+				DBE3869227CC6E48007E2F9C /* WorkingDirectoryHelper.swift */,
 				DBB6F51C24A8D452008B2AAF /* ManifestFile.swift */,
 				DBB6F52524A8D452008B2AAF /* Mappings.swift */,
 				DBB6F51B24A8D452008B2AAF /* Plan.swift */,
@@ -266,6 +269,7 @@
 				DBB6F52924A8D452008B2AAF /* Manifest.swift in Sources */,
 				DBB6F52D24A8D452008B2AAF /* SampleManifestCommand.swift in Sources */,
 				DBB6F51524A8D36B008B2AAF /* main.swift in Sources */,
+				DBE3869327CC6E48007E2F9C /* WorkingDirectoryHelper.swift in Sources */,
 				DBB6F52824A8D452008B2AAF /* CGRect-Extension.swift in Sources */,
 				1C6FCF55834A4908B89AC3C0B0D749CC /* versions.swift in Sources */,
 			);
@@ -392,6 +396,7 @@
 		DBB6F51924A8D36B008B2AAF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5886TSL9MF;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -404,6 +409,7 @@
 		DBB6F51A24A8D36B008B2AAF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5886TSL9MF;
 				ENABLE_HARDENED_RUNTIME = YES;

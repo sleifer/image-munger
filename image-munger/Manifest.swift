@@ -32,8 +32,8 @@ class Manifest {
     }
 
     init(path: String, outputDir: String, manifestFile: ManifestFile) {
-        self.manifestPath = CommandCore.core!.baseSubPath(path)
-        self.outputDir = CommandCore.core!.baseSubPath(outputDir)
+        self.manifestPath = cwd.baseSubPath(path)
+        self.outputDir = cwd.baseSubPath(outputDir)
         settings = manifestFile
         files = settings.files ?? []
         ovalFiles = []

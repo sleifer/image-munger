@@ -10,8 +10,8 @@ import AppKit
 import CommandLineCore
 import Foundation
 
-class SampleManifestCommand: Command {
-    var manifest: Manifest = Manifest()
+class SampleManifestCommand {
+    var manifest: Manifest = .init()
     var catalogFolderSegmentMaxSize: Int = 0
     var catalogFolderSegmentIndex: Int = 0
     var catalogFolderSegmentAccumulatedSize: Int = 0
@@ -20,30 +20,10 @@ class SampleManifestCommand: Command {
 
     required init() {}
 
-    func run(cmd: ParsedCommand, core: CommandCore) {
-        if cmd.parameters.count == 0 {
-            print("No manifest file path specified.")
-            return
-        }
-
+    func run(outputPath: String) {
         let manifestFile = ManifestFile.sample()
 
-        for manifestPath in cmd.parameters {
-            manifestFile.write(to: URL(fileURLWithPath: manifestPath))
-        }
+        manifestFile.write(to: URL(fileURLWithPath: outputPath.fullPath))
         print("Done.")
-    }
-
-    static func commandDefinition() -> SubcommandDefinition {
-        var command = SubcommandDefinition()
-        command.name = "sample"
-        command.synopsis = "Write out a manifest file."
-        command.hasFileParameters = true
-
-        var parameter = ParameterInfo()
-        parameter.help = "manifest file"
-        command.requiredParameters.append(parameter)
-
-        return command
     }
 }

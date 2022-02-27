@@ -40,7 +40,7 @@ enum ScaleMode {
     case fill
 }
 
-class ProcessCommand: Command {
+class ProcessCommand {
     var manifest: Manifest = .init()
     var catalogFolderSegmentMaxSize: Int = 0
     var catalogFolderSegmentIndex: Int = 0
@@ -50,21 +50,16 @@ class ProcessCommand: Command {
 
     required init() {}
 
-    func run(cmd: ParsedCommand, core: CommandCore) {
-        if cmd.parameters.count == 0 {
-            print("No manifest file specified.")
-            return
-        }
-
+    func run(inputPaths: [String], outputDirPath: String?) {
         var outputDir = FileManager.default.currentDirectoryPath
-        if let option = cmd.option("--output") {
-            outputDir = option.arguments[0].expandingTildeInPath
+        if let outputDirPath = outputDirPath {
+            outputDir = outputDirPath.expandingTildeInPath
         }
 
         var manifests: [Manifest] = []
 
-        for manifestPath in cmd.parameters {
-            let result = ManifestFile.multiRead(contentsOf: URL(fileURLWithPath: manifestPath))
+        for manifestPath in inputPaths {
+            let result = ManifestFile.multiRead(contentsOf: URL(fileURLWithPath: manifestPath.fullPath))
             switch result {
             case .success(let manifestFiles):
                 let additionalManifests = manifestFiles.map { entry -> Manifest in
@@ -77,7 +72,7 @@ class ProcessCommand: Command {
             }
         }
 
-        print("Read \(manifests.count) configuration(s) from \(cmd.parameters.count) manifest file(s).")
+        print("Read \(manifests.count) configuration(s) from \(inputPaths.count) manifest file(s).")
 
         for idx in 0..<manifests.count {
             do {
@@ -99,27 +94,6 @@ class ProcessCommand: Command {
         }
 
         print("Done.")
-    }
-
-    static func commandDefinition() -> SubcommandDefinition {
-        var command = SubcommandDefinition()
-        command.name = "process"
-        command.synopsis = "Process images according to manifest file."
-        command.hasFileParameters = true
-
-        var output = CommandOption()
-        output.shortOption = "-o"
-        output.longOption = "--output"
-        output.help = "Output directory"
-        output.argumentCount = 1
-        output.hasFileArguments = true
-        command.options.append(output)
-
-        var parameter = ParameterInfo()
-        parameter.help = "manifest file"
-        command.requiredParameters.append(parameter)
-
-        return command
     }
 
     func collectFiles(manifest: inout Manifest, group: SourceFileGroup) throws {
